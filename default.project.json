@@ -22,6 +22,10 @@
 
     "ServerStorage": {
       "osgl-image-uploader": {
+        "OSGL": {
+          "$path": "src"
+        },
+        
         "$path": "plugins/image"
       }
     }
