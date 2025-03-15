@@ -1,0 +1,29 @@
+{
+  "name": "osgl-new",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "OSGL": {
+        "$path": "src"
+      }
+    },
+    "ServerScriptService": {
+      "Tests": {
+        "$path": "tests/server"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Tests": {
+          "$path": "tests/client"
+        }
+      }
+    },
+
+    "ServerStorage": {
+      "osgl-image-uploader": {
+        "$path": "plugins/image"
+      }
+    }
+  }
+}
