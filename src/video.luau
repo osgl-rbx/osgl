@@ -1,11 +1,28 @@
+------------------------------------------------------------
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
+--
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
+--
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
+--
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
+------------------------------------------------------------
+
 local OSGL = script.Parent
-local drawableObject = OSGL.DrawableObject
-local Texture = require(drawableObject.texture)
 local types = require(OSGL.types)
 
 local Video = {}
 
-function PlaySync<T>(self: types.Video<T>, callback: (width: number, height: number, buffer: buffer) -> ())
+--[=[
+<strong>@OSGL/Video</strong>
+<em>Plays a </em><code>Video</code><em> synchronously.</em>
+  ]=]
+function PlaySync(self: types.Video, callback: (width: number, height: number, buffer: buffer) -> ())
 	local frames = #self.frames
 	local timePerFrame = 1 / self.frameRate
 
@@ -29,12 +46,20 @@ function PlaySync<T>(self: types.Video<T>, callback: (width: number, height: num
 	return self
 end
 
-function PlayAsync<T>(self: types.Video<T>, callback: (width: number, height: number, buffer: buffer) -> ())
+--[=[
+<strong>@OSGL/Video</strong>
+<em>Plays a </em><code>Video</code><em> asynchronously.</em>
+  ]=]
+function PlayAsync(self: types.Video, callback: (width: number, height: number, buffer: buffer) -> ())
 	task.spawn(self.PlaySync, self, callback)
 	return self
 end
 
-function Next<T>(self: types.Video<T>)
+--[=[
+<strong>@OSGL/Video</strong>
+<em>Skips a frame of the </em><code>Video</code><em>.</em>
+  ]=]
+function Next(self: types.Video)
 	local len = #self.frames
 	if self.playbackFrame < len then
 		self.playbackFrame += 1
@@ -45,7 +70,11 @@ function Next<T>(self: types.Video<T>)
 	return self
 end
 
-function Previous<T>(self: types.Video<T>)
+--[=[
+<strong>@OSGL/Video</strong>
+<em>Goes to the previous frame of the </em><code>Video</code><em>.</em>
+  ]=]
+function Previous(self: types.Video)
 	if self.playbackFrame > 0 then
 		self.playbackFrame -= 1
 	end
@@ -53,22 +82,38 @@ function Previous<T>(self: types.Video<T>)
 	return self
 end
 
-function Stop<T>(self: types.Video<T>)
+--[=[
+<strong>@OSGL/Video</strong>
+<em>Stops playback of the </em><code>Video</code><em>.</em>
+  ]=]
+function Stop(self: types.Video)
 	self.playing = false
 	self.playbackFrame = 0
 
 	return self
 end
 
-function GetFrame<T>(self: types.Video<T>, frame: number): types.Texture
-	return Texture.new(self.sizeX, self.sizeY, self.frames[frame])
+--[=[
+<strong>@OSGL/Video</strong>
+<em>Returns a frame of the</em><code>Video</code><em>.</em>
+  ]=]
+function GetFrame(self: types.Video, frame: number): (buffer, number, number)
+	return self.frames[frame], self.width, self.height, self.frames[frame]
 end
 
-function GetBufferOfFrame<T>(self: types.Video<T>, frame: number): buffer
+--[=[
+<strong>@OSGL/Video</strong>
+<em>Returns the buffer of a frame from the </em><code>Video</code><em>.</em>
+  ]=]
+function GetBufferOfFrame(self: types.Video, frame: number): buffer
 	return self.frames[frame] or buffer.create(0)
 end
 
-function Video.new<T>(width: number, height: number, frames: { buffer }?): types.Video<T>
+--[=[
+<strong>@OSGL/Video</strong>
+<em>Creates a new </em><code>Video</code><em>.</em>
+  ]=]
+function Video.new(width: number, height: number, frames: { buffer }?): types.Video
 	local frames = frames or {}
 
     local size
@@ -103,7 +148,11 @@ function Video.new<T>(width: number, height: number, frames: { buffer }?): types
 	}
 end
 
-function Video.from<T>(collection: { types.RawTexture }): types.Video<T>
+--[=[
+<strong>@OSGL/Video</strong>
+<em>Creates a new </em><code>Video</code><em> from a collection of raw </em><code>Texture</code><em>s.</em>
+  ]=]
+function Video.from(collection: { types.RawTexture }): types.Video
 	local framesAmount = #collection
 
 	if framesAmount == 0 then

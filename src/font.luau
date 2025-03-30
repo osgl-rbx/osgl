@@ -1,3 +1,21 @@
+--!optimize 2
+--!native
+
+------------------------------------------------------------
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
+--
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
+--
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
+--
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
+------------------------------------------------------------
+
 local OSGL = script.Parent
 local types = require(OSGL.types)
 local utils = require(OSGL.util)
@@ -65,6 +83,10 @@ end
 	@param color -- The color of the text
 	@return Font -- Returns itself.
 ]=]
+--[=[
+<strong>@OSGL/Font</strong>
+<em>Draws Text on-screen.</em>
+  ]=]
 function Font.Draw<T>(
 	self: types.Font,
 	object: types.DrawableObject<T>,
@@ -153,6 +175,10 @@ end
 	@param data -- The loaded font-date
 	@return Font -- Returns a new font.
 ]=]
+--[=[
+<strong>@OSGL/Font</strong>
+<em>Creates a new </em><code>Font</code><em> from loaded font-data.</em>
+  ]=]
 function Font.from(data: types.StoredFont): Result<types.Font, oEnum.TextureError>
 	local v = data.version
 	if v and not table.find(utils.VALID_FONT_VERSIONS, v) then

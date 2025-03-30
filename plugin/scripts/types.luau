@@ -13,24 +13,13 @@
 -- Full license available in the LICENSE file
 ------------------------------------------------------------
 
-local Pixel = require(script.pixel)
-local Line = require(script.line)
-local Rect = require(script.rect)
-local Polygon = require(script.polygon)
-local Triangle = require(script.triangle)
-local Circle = require(script.circle)
-local Buffer = require(script.buffer)
+export type ToolbarData = {
+    Name: string,
+    Icon: string,
+    Tooltip: string?,
+    Id: string?,
 
-local Clear = require(script.clear)
-
-return {
-    Pixel = Pixel,
-    Line = Line,
-    Rectangle = Rect,
-    Polygon = Polygon,
-    Triangle = Triangle,
-    Circle = Circle,
-    Buffer = Buffer,
-
-    Clear = Clear,
+    OnButtonClick: (Button: PluginToolbarButton) -> (),
 }
+
+return nil

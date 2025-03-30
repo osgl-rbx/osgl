@@ -1,6 +1,21 @@
 --!optimize 2
 --!native
 
+------------------------------------------------------------
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
+--
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
+--
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
+--
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
+------------------------------------------------------------
+
 local AssetService = game:GetService("AssetService")
 
 local drawableObject = script.Parent
@@ -22,9 +37,9 @@ local function dynamicCreateEditableImage(
 	if Parent and not Window.isDrawableInstance(Parent) then
 		return result.new(false, oEnum.WindowError.InvalidCreationInstance)
 	end
-	
+
 	if width < 1 or width > 1024 or height < 1 or height > 1024 then
-        return result.new(false, oEnum.WindowError.WindowDimensionsOutOfBounds)
+		return result.new(false, oEnum.WindowError.WindowDimensionsOutOfBounds)
 	end
 
 	local success, EditableImage: EditableImage = pcall(function()
@@ -40,8 +55,12 @@ local function dynamicCreateEditableImage(
 	return result.new(true, EditableImage)
 end
 
+--[=[
+<strong>@OSGL/Window</strong>
+<em>Creates a new </em><code>Window</code></em><em> object given a </em><code>EditableImage</code><em>.</em>
+  ]=]
 function Window.new(editableImage: EditableImage, renderers: { types.Drawable }): types.Window
-    local content = Content.fromObject(editableImage)
+	local content = Content.fromObject(editableImage)
 	for _, renderObject in ipairs(renderers) do
 		local sourceProperty = Window.getRenderingProperty(renderObject)
 		if sourceProperty == "" then
@@ -54,7 +73,7 @@ function Window.new(editableImage: EditableImage, renderers: { types.Drawable })
 	local size = editableImage.Size
 	local width, height = size.X, size.Y
 
-	local t = windowBase.new();
+	local t = windowBase.new()
 
 	t.surfaces = renderers
 	t.editableImage = editableImage
@@ -63,9 +82,13 @@ function Window.new(editableImage: EditableImage, renderers: { types.Drawable })
 	t.height = height
 	t.size = size
 
-    return t
+	return t
 end
 
+--[=[
+<strong>@OSGL/Window</strong>
+<em>Creates a new </em><code>Window</code><em> object given a drawable instance.</em>
+  ]=]
 function Window.from(
 	drawableObject: types.Drawable,
 	width: number,
@@ -79,6 +102,10 @@ function Window.from(
 	return result.new(true, Window.new(editableImage:Unwrap(), { drawableObject }))
 end
 
+--[=[
+<strong>@OSGL/Window</strong>
+<em>Creates a new </em><code>Window</code><em> object given an asset id.</em>
+  ]=]
 function Window.fromAssetId(assetId: string): Result<types.Window, oEnum.WindowError>
 	local texture = Content.fromAssetId(assetId)
 
@@ -93,6 +120,10 @@ function Window.fromAssetId(assetId: string): Result<types.Window, oEnum.WindowE
 	return result.new(true, Window.new(editableImage))
 end
 
+--[=[
+<strong>@OSGL/Window</strong>
+<em>Creates a new </em><code>Window</code><em> object given a buffer.</em>
+  ]=]
 function Window.fromBuffer(buffer: buffer, width: number, height: number): Result<types.Window, oEnum.WindowError>
 	local editableImage = dynamicCreateEditableImage(nil, width, height)
 	if not editableImage.isOk then
@@ -106,6 +137,11 @@ function Window.fromBuffer(buffer: buffer, width: number, height: number): Resul
 	return result.new(true, Window.new(image, {}))
 end
 
+--[=[
+<strong>@OSGL/Window</strong>
+<strong>@Debug</strong>
+<em>Checks if the </em><code>Instance</code><em> provided could be drawn onto a </em><code>Window</code><em>.</em>
+  ]=]
 function Window.isDrawableInstance(object: Instance): boolean
 	if typeof(object) ~= "Instance" then
 		return
@@ -114,6 +150,11 @@ function Window.isDrawableInstance(object: Instance): boolean
 	return object:IsA("ImageLabel") or object:IsA("ImageButton") or object:IsA("Decal") or object:IsA("Texture")
 end
 
+--[=[
+<strong>@OSGL/Window</strong>
+<strong>@Debug</strong>
+<em>Given an</em> <code>Instance</code><em>, returns the property that should be used to render the </em><code>EditableImage</code><em>.</em>
+  ]=]
 function Window.getRenderingProperty(object: types.Drawable): string
 	if not Window.isDrawableInstance(object) then
 		return ""

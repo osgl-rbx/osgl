@@ -1,3 +1,21 @@
+--!optimize 2
+--!native
+
+------------------------------------------------------------
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
+--
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
+--
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
+--
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
+------------------------------------------------------------
+
 local AssetService = game:GetService("AssetService")
 
 local DrawableObject = script.Parent
@@ -72,6 +90,11 @@ local function checkUnloadedTexture(unloadedTexture: types.RawTexture): Result<t
 	return result.new(true, unloadedTexture)
 end
 
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Checked</strong>
+<em>Creates a </em><code>Texture</code><em> from raw data.</em>
+  ]=]
 function Texture.fromChecked(rawTexture: types.RawTexture): Result<types.Texture, oEnum.TextureError>
 	local raw = checkUnloadedTexture(rawTexture)
 
@@ -82,6 +105,11 @@ function Texture.fromChecked(rawTexture: types.RawTexture): Result<types.Texture
 	return result.new(true, Texture.fromUnchecked(raw:Unwrap()))
 end
 
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Unchecked!</strong>
+<em>Creates a </em><code>Texture</code><em> from an unloaded one.</em>
+  ]=]
 function Texture.fromUnchecked(rawTexture: types.BaseUnloadedTexture): types.Texture
 	local width, height = rawTexture.width, rawTexture.height
 
@@ -95,6 +123,11 @@ function Texture.fromUnchecked(rawTexture: types.BaseUnloadedTexture): types.Tex
 	return t
 end
 
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Checked</strong>
+<em>Serializes the </em><code>Texture</code><em>.</em>
+  ]=]
 function Texture.serializeChecked(rawTexture: types.RawTexture): Result<(buffer, number, number), oEnum.TextureError>
 	local texture = checkUnloadedTexture(rawTexture)
 
@@ -105,10 +138,20 @@ function Texture.serializeChecked(rawTexture: types.RawTexture): Result<(buffer,
 	return result.new(true, Texture.serializeUnchecked(texture:Unwrap()))
 end
 
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Unchecked!</strong>
+<em>Serializes the </em><code>Texture</code><em>.</em>
+  ]=]
 function Texture.serializeUnchecked(rawTexture: types.BaseUnloadedTexture): (buffer, number, number)
 	return rawTexture.pixels, rawTexture.width, rawTexture.height
 end
 
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Checked</strong>
+<em>Draws the </em><code>Texture</code><em> somwhere.</em>
+  ]=]
 function Texture.drawChecked<T>(
 	object: types.DrawableObject<T>,
 	texture: types.Texture,
@@ -150,6 +193,11 @@ function Texture.drawChecked<T>(
 	end
 end
 
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Unchecked!</strong>
+<em>Draws the </em><code>Texture</code><em> somwhere.</em>
+  ]=]
 function Texture.drawUnchecked<T>(
 	object: types.DrawableObject<T>,
 	texture: types.Texture,
@@ -179,6 +227,10 @@ function Texture.drawUnchecked<T>(
 	end
 end
 
+--[=[
+<strong>@OSGL/Texture</strong>
+<em>Creates a </em><code>Texture</code><em> from an asset id.</em>
+  ]=]
 function Texture.fromAssetId(assetId: number): Result<types.Texture, oEnum.DrawableObjectError>
 	local newContent = Content.fromAssetId(assetId)
 
@@ -203,6 +255,10 @@ function Texture.fromAssetId(assetId: number): Result<types.Texture, oEnum.Drawa
 	return result.new(true, t)
 end
 
+--[=[
+<strong>@OSGL/Texture</strong>
+<em>Creates a new </em><code>Texture</code><em> from the data provided.</em>
+  ]=]
 function Texture.new(width: number, height: number, bfr: buffer?): types.Texture
 	local buff = bfr or buffer.create(width * height * 4)
 	local t = base.new()

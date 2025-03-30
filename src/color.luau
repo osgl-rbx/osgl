@@ -1,26 +1,18 @@
 --!optimize 2
 
 ------------------------------------------------------------
--- OSGL v1.5b - Open-Source-Graphical-Library
--- Copyright © 2023-2025 OSGL (@saaawdust)
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
 --
--- This software is provided ‘as-is’, without any express or implied warranty.
--- In no event will the authors be held liable for any damages arising from the use of this software.
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
 --
--- Permission is granted to anyone to use this software for any purpose,
--- including commercial applications, and to alter it and redistribute it freely,
--- subject to the following restrictions:
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
 --
--- 1. The origin of this software must not be misrepresented;
---    you must not claim that you wrote the original software.
---    If you use this software in a product, an acknowledgment
---    in the product documentation would be appreciated but is not required.
---
--- 2. Altered source versions must be plainly marked as such,
---    and must not be misrepresented as being the original software.
---
--- 3. This notice may not be removed or altered from any source distribution.
---
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
 ------------------------------------------------------------
 
 local OSGL = script.Parent
@@ -55,6 +47,10 @@ local color = {}
     @within Color
     @return Color -- Returns a color Value
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Creates a new RGBA </em><code>Color</code><em>.</em>
+  ]=]
 function color.new(r: number?, g: number?, b: number?, a: number?): types.Color
     r = r or 0
     g = g or 0
@@ -85,6 +81,10 @@ end
     @within Color
     @return Color -- Returns a color Value
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Creates a new RGBA </em><code>Color</code><em> from an RGB one.</em>
+  ]=]
 function color.newRGB(r: number?, g: number?, b: number?): types.Color
     r = r or 0
     g = g or 0
@@ -121,6 +121,10 @@ end
     @within Color
     @return number
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Sets the R channel of a </em><code>Color</code><em>.</em>
+  ]=]
 function color.setR(c: types.Color, r: number): number
     return bit32bor(c, r)
 end
@@ -148,6 +152,10 @@ end
     @within Color
     @return number
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Sets the G channel of a </em><code>Color</code><em>.</em>
+  ]=]
 function color.setG(c: types.Color, g: number): number
     return bit32bor(c, bit32bor(bit32band(c, 0xFF00FFFF), bit32lshift(g, 8)))
 end
@@ -175,6 +183,10 @@ end
     @within Color
     @return number
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Sets the B channel of a </em><code>Color</code><em>.</em>
+  ]=]
 function color.setB(c: types.Color, b: number): number
     return bit32bor(bit32band(c, 0xFFFF00FF), bit32lshift(b, 16))
 end
@@ -202,6 +214,10 @@ end
     @within Color
     @return number
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Sets the A channel of a </em><code>Color</code><em>.</em>
+  ]=]
 function color.setA(c: types.Color, a: number): number
     return bit32bor(bit32band(c, 0x00FFFFFF), bit32lshift(a, 24))
 end
@@ -221,15 +237,18 @@ end
 
     @param rgbaColor Color -- The color to read
     @within Color
-    @return { number }
+    @return number
 ]=]
-function color.read(rgbaColor: types.Color): {  number }
-	return {
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Returns all 4 channels of a </em><code>Color</code><em>.</em>
+  ]=]
+function color.read(rgbaColor: types.Color): (number, number, number, number)
+	return 
         color.r(rgbaColor),
         color.g(rgbaColor),
         color.b(rgbaColor),
-        color.a(rgbaColor),
-    }
+        color.a(rgbaColor)
 end
 
 --[=[
@@ -249,6 +268,10 @@ end
     @within Color
     @return number
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Returns the R channel of a </em><code>Color</code><em>.</em>
+  ]=]
 function color.r(color: types.Color): number
     return bit32band(color, 0xFF)
 end
@@ -270,6 +293,10 @@ end
     @within Color
     @return number
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Returns the G channel of a </em><code>Color</code><em>.</em>
+  ]=]
 function color.g(color: types.Color): number
     return bit32band(bit32rshift(color, 8), 0xFF)
 end
@@ -291,6 +318,10 @@ end
     @within Color
     @return number
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Returns the B channel of a </em><code>Color</code><em>.</em>
+  ]=]
 function color.b(color: types.Color): number
     return bit32band(bit32rshift(color, 16), 0xFF)
 end
@@ -312,12 +343,20 @@ end
     @within Color
     @return number
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Returns the A channel of a </em><code>Color</code><em>.</em>
+  ]=]
 function color.a(color: types.Color): number
     return bit32rshift(color, 24)
 end
 
-function color.fromColor3(color3: Color3): number
-    return color.newRGB(color3.R * 255, color3.G * 255, color3.B * 255)
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Creates a </em><code>Color</code><em> from a </em><code>Color3</code><em>.</em>
+  ]=]
+function color.fromColor3(color3: Color3, a: number?): number
+    return color.new(color3.R * 255, color3.G * 255, color3.B * 255, a)
 end
 
 --[=[
@@ -338,6 +377,10 @@ end
     @within Color
     @return number
 ]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Tints a </em><code>Color</code><em>.</em>
+  ]=]
 function color.tint(color1: types.Color, color2: types.Color, factor: number)
     if factor == 0 then
         return color1

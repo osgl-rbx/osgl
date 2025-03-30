@@ -1,3 +1,18 @@
+------------------------------------------------------------
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
+--
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
+--
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
+--
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
+------------------------------------------------------------
+
 local OSGL = script.Parent
 local result = require(OSGL.result)
 local oEnum = require(OSGL.enums)
@@ -34,6 +49,7 @@ export type DrawableObject<T> = DrawingContext<DrawableObject<T>> & {
     TintRegionChecked: (self: DrawableObject<T>, tint: Color, factor: number, X: number, Y: number, width: number, height: number) -> Result<nil, oEnum.DrawableObjectError>,
     TintRegionUnchecked: (self: DrawableObject<T>, tint: Color, factor: number, X: number, Y: number, width: number, height: number) -> nil,
     Tint: (self: DrawableObject<T>, tint: Color, factor: number) -> nil,
+    Resample: (self: DrawableObject<T>, scale: number?) -> nil,
 }
 
 export type DrawingContext<T> = {
@@ -84,7 +100,7 @@ export type Font = {
     Draw:<T>(self: Font, object: DrawableObject<T>, text: string, x: number, y: number, color: Color) -> Font,
 }
 
-export type Video<T> = {
+export type Video = {
     width: number,
     height: number,
     playbackFrame: number,
@@ -93,16 +109,16 @@ export type Video<T> = {
     loop: boolean,
     frames: {buffer},
 
-    PlaySync: (self: Video<T>, callback: (width: number, height: number, buffer: buffer) -> ()) -> Video<T>,
-    PlayAsync: (self: Video<T>, callback: (width: number, height: number, buffer: buffer) -> ()) -> Video<T>,
+    PlaySync: (self: Video, callback: (width: number, height: number, buffer: buffer) -> ()) -> Video,
+    PlayAsync: (self: Video, callback: (width: number, height: number, buffer: buffer) -> ()) -> Video,
 
-    Stop: (self: Video<T>) -> Video<T>,
+    Stop: (self: Video) -> Video,
 
-    GetFrame: (self: Video<T>, frame: number) -> Texture,
-    GetBufferOfFrame: (self: Video<T>, frame: number) -> buffer,
+    GetFrame: (self: Video, frame: number) -> Texture,
+    GetBufferOfFrame: (self: Video, frame: number) -> buffer,
 
-    Previous: (self: Video<T>) -> Video<T>,
-    Next: (self: Video<T>) -> Video<T>,
+    Previous: (self: Video) -> Video,
+    Next: (self: Video) -> Video,
 }
 
 return nil

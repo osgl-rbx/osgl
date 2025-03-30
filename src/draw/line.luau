@@ -1,6 +1,21 @@
 --!optimize 2
 --!native
 
+------------------------------------------------------------
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
+--
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
+--
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
+--
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
+------------------------------------------------------------
+
 local Draw = script.Parent
 local OSGL = Draw.Parent
 local types = require(OSGL.types)
@@ -9,7 +24,7 @@ local color = require(OSGL.color)
 
 return function<T>(object: types.DrawableObject<T>, startX: number, startY: number, stopX: number, stopY: number, thickness: number, c: types.Color)
 	thickness = thickness or 1
-	c = color or color.BLACK
+	c = c or color.BLACK
 
 	if thickness == 0 then
 		return

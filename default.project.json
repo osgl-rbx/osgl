@@ -19,14 +19,24 @@
         }
       }
     },
-
     "ServerStorage": {
-      "osgl-image-uploader": {
+      "osgl-tools": {
+        "$className": "Folder",
+
+        "OSGLNotifications": {
+          "$path": "plugin/notifications.rbxm"
+        },
+
+        "scripts": {
+          "$path": "plugin/scripts"
+        },
+
         "OSGL": {
           "$path": "src"
         },
-        
-        "$path": "plugins/image"
+        "osgl-image-uploader": {
+          "$path": "plugin/image"
+        }
       }
     }
   }
