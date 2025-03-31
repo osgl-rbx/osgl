@@ -1,3 +1,3 @@
 [submodule "plugins/image/png"]
-	path = plugins/image/png
+	path = plugin/image/png
 	url = https://github.com/MaximumADHD/Roblox-PNG-Library.git

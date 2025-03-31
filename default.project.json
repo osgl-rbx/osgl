@@ -1,5 +1,5 @@
 {
-  "name": "osgl-new",
+  "name": "osgl",
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
@@ -16,26 +16,6 @@
       "StarterPlayerScripts": {
         "Tests": {
           "$path": "tests/client"
-        }
-      }
-    },
-    "ServerStorage": {
-      "osgl-tools": {
-        "$className": "Folder",
-
-        "OSGLNotifications": {
-          "$path": "plugin/notifications.rbxm"
-        },
-
-        "scripts": {
-          "$path": "plugin/scripts"
-        },
-
-        "OSGL": {
-          "$path": "src"
-        },
-        "osgl-image-uploader": {
-          "$path": "plugin/image"
         }
       }
     }

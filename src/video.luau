@@ -98,7 +98,7 @@ end
 <em>Returns a frame of the</em><code>Video</code><em>.</em>
   ]=]
 function GetFrame(self: types.Video, frame: number): (buffer, number, number)
-	return self.frames[frame], self.width, self.height, self.frames[frame]
+	return self.frames[frame], self.width, self.height
 end
 
 --[=[

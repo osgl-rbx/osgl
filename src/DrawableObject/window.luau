@@ -81,6 +81,8 @@ function Window.new(editableImage: EditableImage, renderers: { types.Drawable })
 	t.width = width
 	t.height = height
 	t.size = size
+	t.targetFPS = 60
+	t.lastRenderTime = os.clock()
 
 	return t
 end

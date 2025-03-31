@@ -1,0 +1,23 @@
+{
+    "name": "osgl-plugin",
+    "tree": {
+        "$className": "DataModel",
+        "ServerStorage": {
+            "osgl-tools": {
+                "$className": "Folder",
+                "OSGLNotifications": {
+                    "$path": "plugin/notifications.rbxm"
+                },
+                "scripts": {
+                    "$path": "plugin/scripts"
+                },
+                "OSGL": {
+                    "$path": "src"
+                },
+                "osgl-image-uploader": {
+                    "$path": "plugin/image"
+                }
+            }
+        }
+    }
+}

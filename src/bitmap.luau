@@ -44,6 +44,15 @@ function Read(self: types.Bitmap, x: number, y: number, channel: number?): numbe
     return buffer.readu8(self.buffer, (y * self.width + x) * self.channels + (channel - 1))
 end
 
+
+--[=[
+<strong>@OSGL/Bitmap</strong>
+<em>Writes to the </em><code>Bitmap</code><em>.</em>
+  ]=]
+function Write(self: types.Bitmap, x: number, y: number, channel: number, value: number)
+    return buffer.writeu8(self.buffer, (y * self.width + x) * self.channels + (channel - 1), value)
+end
+
 --[=[
 <strong>@OSGL/Bitmap</strong>
 <strong>@Checked</strong>
@@ -75,6 +84,7 @@ function Bitmap.fromUnchecked(rawBitmap: types.BaseUnloadedTexture): types.Bitma
         channels = channels,
 
         Read = Read,
+        Write = Write,
     }
 end
 

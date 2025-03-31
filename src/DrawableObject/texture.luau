@@ -78,6 +78,47 @@ local function drawRotated<T>(
 	end
 end
 
+local function drawRotatedUnchecked<T>(
+	object: types.DrawableObject<T>,
+	texture: types.Texture,
+	textureX: number,
+	textureY: number,
+	rotation: number
+)
+	local sizeY = texture.height
+	local sizeX = texture.width
+	local bfr = texture.buffer
+
+	local radians = math.rad(rotation)
+	local cosR = math.cos(radians)
+	local sinR = math.sin(radians)
+
+	local centerX = textureX + sizeX / 2
+	local centerY = textureY + sizeY / 2
+
+	local function rotate(x: number, y: number): number
+		local relX = x - centerX
+		local relY = y - centerY
+
+		local rotatedX = cosR * relX - sinR * relY
+		local rotatedY = sinR * relX + cosR * relY
+
+		return rotatedX + centerX, rotatedY + centerY
+	end
+
+	for y = 0, sizeY - 1 do
+		for x = 0, sizeX - 1 do
+			x += textureX
+			y += textureY
+
+			local sourceX, sourceY = rotate(x, y)
+
+			local pixelColor = buffer.readu32(bfr, floor(sourceY) * sizeX * 4 + floor(sourceX) * 4)
+			pixel(object, x, y, pixelColor)
+		end
+	end
+end
+
 local function checkUnloadedTexture(unloadedTexture: types.RawTexture): Result<types.BaseUnloadedTexture, oEnum.TextureError>
 	if typeof(unloadedTexture) == "Instance" and unloadedTexture:IsA("ModuleScript") then
 		unloadedTexture = require(unloadedTexture)
@@ -223,7 +264,7 @@ function Texture.drawUnchecked<T>(
 			end
 		end
 	else
-		drawRotated(object, texture, textureX, textureY, rotation)
+		drawRotatedUnchecked(object, texture, textureX, textureY, rotation)
 	end
 end
 

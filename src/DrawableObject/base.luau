@@ -49,6 +49,10 @@ function DrawBaseImpl.Resize<T>(
 		return result.new(true, nil)
 	end
 
+	if width > 1024 or height > 1024 or width < 0 or height < 0 then
+		return result.new(false, oEnum.DrawableObjectError.ResizeOutOfBounds)
+	end
+
 	local copy_size
 	local bfrSize = width * height * 4
 	local currentSize = buffer.len(self.buffer)
@@ -110,11 +114,14 @@ function DrawBaseImpl.Deserialize<T>(
 ): Result<nil, oEnum.DrawableObjectError>
 
 	local otherBuffLen = buffer.len(buff)
-	if (otherBuffLen ~= width * height * 4) or otherBuffLen > buffer.len(self.buffer) then
+	if (otherBuffLen ~= width * height * 4) then
 		return result.new(false, oEnum.DrawableObjectError.BadBufferSize)
 	end
 
-	DrawBaseImpl.Resize(self, width, height)
+	if otherBuffLen > buffer.len(self.buffer) then
+		DrawBaseImpl.Resize(self, math.max(width, self.width), math.max(height, self.height))
+	end
+
 	buffer.copy(self.buffer, 0, buff)
 
 	return result.new(true, nil)

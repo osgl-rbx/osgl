@@ -27,8 +27,10 @@ export type Color = number
 export type Window = DrawableObject<Window> & {
     surfaces: {Drawable},
     editableImage: EditableImage,
+    targetFPS: number,
 
     Render: (self: Window) -> (),
+    RenderTargetFPS: (self: Window) -> (),
     AddRenderers: (self: Window, ...Drawable) -> (),
     RemoveRenderers: (self: Window, ...Drawable) -> (),
     GetRelativeMousePosition: (self: Window, image: ImageBase) -> (boolean, number, number)
@@ -72,7 +74,7 @@ export type BaseRawTexture<T> = {
 }
 
 export type BaseUnloadedTexture = BaseRawTexture<"1.6b">
-export type Texture = DrawableObject<Texture> & {}
+export type Texture = DrawableObject<Texture>
 export type RawTexture = ModuleScript | BaseUnloadedTexture
 export type Bitmap = {
     channels: number,
@@ -114,7 +116,7 @@ export type Video = {
 
     Stop: (self: Video) -> Video,
 
-    GetFrame: (self: Video, frame: number) -> Texture,
+    GetFrame: (self: Video, frame: number) -> (buffer, number, number),
     GetBufferOfFrame: (self: Video, frame: number) -> buffer,
 
     Previous: (self: Video) -> Video,
