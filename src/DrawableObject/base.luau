@@ -234,7 +234,7 @@ end
 <strong>@OSGL/Drawable</strong>
 <em>Resamples the entire object.</em>
   ]=]
-function DrawBaseImpl.Resample<T>(self: types.DrawableObject<T>, scale: number?)
+  function DrawBaseImpl.Resample<T>(self: types.DrawableObject<T>, scale: number?)
     scale = scale or 1
 
     -- Get original texture size and buffer
@@ -242,38 +242,38 @@ function DrawBaseImpl.Resample<T>(self: types.DrawableObject<T>, scale: number?)
     local originalHeight = self.height
 
     -- Calculate the new size of the texture
-    local newWidth = math.floor(originalWidth * scale)
-    local newHeight = math.floor(originalHeight * scale)
+    local newWidth = math.max(1, math.floor(originalWidth * scale))
+    local newHeight = math.max(1, math.floor(originalHeight * scale))
 
     local newBuffer = buffer.create(newWidth * newHeight * 4)
 
     for newY = 0, newHeight - 1 do
         for newX = 0, newWidth - 1 do
-            local srcX = math.clamp((newX + 0.5) / scale - 0.5, 0, originalWidth - 1)
-            local srcY = math.clamp((newY + 0.5) / scale - 0.5, 0, originalHeight - 1)
+            local srcX = math.floor(math.clamp((newX + 0.5) / scale - 0.5, 0, originalWidth - 1) + 0.5)
+            local srcY = math.floor(math.clamp((newY + 0.5) / scale - 0.5, 0, originalHeight - 1) + 0.5)
             local color = buffer.readu32(self.buffer, (srcY * originalWidth + srcX) * 4)
             buffer.writeu32(newBuffer, (newY * newWidth + newX) * 4, color)
         end
     end
 
-	local size = Vector2.new(newWidth, newHeight);
-	if self.editableImage then
-		local editableImage = AssetService:CreateEditableImage({ Size = size })
-		if not editableImage then
-			return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
-		end
-		
-		self.editableImage = editableImage
-		local content = Content.fromObject(editableImage)
-		for _, v in self.surfaces do
-			local prop = util.getRendererProp(v)
-			if prop == "" then
-				continue
-			end
+    local size = Vector2.new(newWidth, newHeight);
+    if self.editableImage then
+        local editableImage = AssetService:CreateEditableImage({ Size = size })
+        if not editableImage then
+            return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
+        end
+        
+        self.editableImage = editableImage
+        local content = Content.fromObject(editableImage)
+        for _, v in self.surfaces do
+            local prop = util.getRendererProp(v)
+            if prop == "" then
+                continue
+            end
 
-			v[prop] = content
-		end
-	end
+            v[prop] = content
+        end
+    end
 
     self.size = size
     self.width = newWidth

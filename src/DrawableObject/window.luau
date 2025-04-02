@@ -149,7 +149,11 @@ function Window.isDrawableInstance(object: Instance): boolean
 		return
 	end
 
-	return object:IsA("ImageLabel") or object:IsA("ImageButton") or object:IsA("Decal") or object:IsA("Texture")
+	return object:IsA("ImageLabel") or
+			object:IsA("ImageButton") or
+			object:IsA("Decal") or
+			object:IsA("Texture") or
+			object:IsA("MeshPart")
 end
 
 --[=[

@@ -63,6 +63,8 @@ while task.wait() do
 	end
 
 	unwrappedWindow.buffer = comparisonWindow.buffer
+
+	print(V)
 	unwrappedWindow:Resample(V)
 	unwrappedWindow:Render()
 end

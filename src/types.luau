@@ -21,7 +21,7 @@ type Result<T, E> = result.Result<T, E>
 
 export type ImageBase = ImageLabel | ImageButton
 export type TextureBase = Decal | Texture
-export type Drawable = ImageBase | TextureBase
+export type Drawable = ImageBase | TextureBase | MeshPart
 export type Color = number
 
 export type Window = DrawableObject<Window> & {
@@ -81,7 +81,8 @@ export type Bitmap = {
     width: number,
     height: number,
     buffer: buffer,
-    Read: (self: Bitmap, x: number, y: number, channel: number?) -> number
+    Read: (self: Bitmap, X: number, Y: number, channel: number?) -> number,
+    Write: (self: Bitmap, X: number, Y: number, channel: number, value: number) -> nil,
 }
 
 export type Glyph = {
