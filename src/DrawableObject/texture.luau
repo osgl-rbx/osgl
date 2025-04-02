@@ -300,14 +300,20 @@ end
 <strong>@OSGL/Texture</strong>
 <em>Creates a new </em><code>Texture</code><em> from the data provided.</em>
   ]=]
-function Texture.new(width: number, height: number, bfr: buffer?): types.Texture
-	local buff = bfr or buffer.create(width * height * 4)
+function Texture.new(width: number, height: number, bfr: buffer?): Result<types.Texture, oEnum.DrawableObjectError>
+	local len = width * height * 4
+	local buff = bfr or buffer.create(len)
+
+	if buffer.len(buff) ~= len then
+		return result.new(false, oEnum.DrawableObjectError.BadBufferSize)
+	end
+
 	local t = base.new()
 	t.width = width
 	t.height = height
 	t.buffer = buff
 
-	return t
+	return result.new(true, t)
 end
 
 return Texture
