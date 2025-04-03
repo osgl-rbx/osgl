@@ -29,15 +29,21 @@ local TextureError = {
     BadInput = 6 :: TextureError,
 }
 
+local FontError = {
+    BadInput = 6 :: TextureError,
+}
+
 local enums = {
     WindowError = WindowError :: typeof(WindowError),
     DrawableObjectError = DrawableObjectError :: typeof(DrawableObjectError),
     TextureError = TextureError :: typeof(TextureError),
+    FontError = FontError :: typeof(FontError),
 }
 
 export type WindowError = number
 export type DrawableObjectError = number
 export type TextureError = number
+export type FontError = number
 export type OEnum = typeof(enums)
 
 return enums :: OEnum

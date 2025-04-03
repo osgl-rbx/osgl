@@ -179,10 +179,10 @@ end
 <strong>@OSGL/Font</strong>
 <em>Creates a new </em><code>Font</code><em> from loaded font-data.</em>
   ]=]
-function Font.from(data: types.StoredFont): Result<types.Font, oEnum.TextureError>
+function Font.from(data: types.StoredFont): Result<types.Font, oEnum.FontError>
 	local v = data.version
 	if v and not table.find(utils.VALID_FONT_VERSIONS, v) then
-        return result.new(false, oEnum.TextureError.BadInput)
+        return result.new(false, oEnum.FontError.BadInput)
 	end
 
 	return result.new(true, {

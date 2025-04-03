@@ -45,7 +45,6 @@ local rnd = math.random
 for x = 0, WIDTH - 1 do
 	for y = 0, HEIGHT - 1 do
 		local col = color.newRGB(rnd(0, 255), rnd(0, 255), rnd(0, 255))
-		unwrappedWindow:Pixel(x, y, col)
 		comparisonWindow:Pixel(x, y, col)
 	end
 end
@@ -64,8 +63,15 @@ while task.wait() do
 
 	unwrappedWindow.buffer = comparisonWindow.buffer
 
-	print(V)
-	unwrappedWindow:Resample(V)
-	unwrappedWindow:Render()
+	local S, E = pcall(function()
+		unwrappedWindow:Resample(V)
+		unwrappedWindow:Render()
+	end)
+
+	if not S then
+		warn(V)
+	else
+		print(V)
+	end
 end
 

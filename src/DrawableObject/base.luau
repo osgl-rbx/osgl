@@ -242,8 +242,8 @@ end
     local originalHeight = self.height
 
     -- Calculate the new size of the texture
-    local newWidth = math.max(1, math.floor(originalWidth * scale))
-    local newHeight = math.max(1, math.floor(originalHeight * scale))
+    local newWidth = math.clamp(math.floor(originalWidth * scale), 1, 1024)
+    local newHeight = math.clamp(math.floor(originalHeight * scale), 1, 1024)
 
     local newBuffer = buffer.create(newWidth * newHeight * 4)
 
@@ -297,7 +297,6 @@ return {
 			Resample = DrawBaseImpl.Resample,
 			
 			Pixel = draw.Pixel,
-			Test = draw.Test,
 			Line = draw.Line,
 			Rectangle = draw.Rectangle,
 			Polygon = draw.Polygon,
