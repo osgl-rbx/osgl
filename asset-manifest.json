@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/osgl/static/css/main.d0475ef8.css",
-    "main.js": "/osgl/static/js/main.4f0ffa5e.js",
+    "main.js": "/osgl/static/js/main.574566cb.js",
     "static/css/578.f4f0e8f0.chunk.css": "/osgl/static/css/578.f4f0e8f0.chunk.css",
     "static/js/578.f3ab5667.chunk.js": "/osgl/static/js/578.f3ab5667.chunk.js",
     "static/css/210.f4f0e8f0.chunk.css": "/osgl/static/css/210.f4f0e8f0.chunk.css",
@@ -54,7 +54,7 @@
     "static/js/239.d3f43ed4.chunk.js": "/osgl/static/js/239.d3f43ed4.chunk.js",
     "index.html": "/osgl/index.html",
     "main.d0475ef8.css.map": "/osgl/static/css/main.d0475ef8.css.map",
-    "main.4f0ffa5e.js.map": "/osgl/static/js/main.4f0ffa5e.js.map",
+    "main.574566cb.js.map": "/osgl/static/js/main.574566cb.js.map",
     "578.f4f0e8f0.chunk.css.map": "/osgl/static/css/578.f4f0e8f0.chunk.css.map",
     "578.f3ab5667.chunk.js.map": "/osgl/static/js/578.f3ab5667.chunk.js.map",
     "210.f4f0e8f0.chunk.css.map": "/osgl/static/css/210.f4f0e8f0.chunk.css.map",
@@ -108,6 +108,6 @@
   },
   "entrypoints": [
     "static/css/main.d0475ef8.css",
-    "static/js/main.4f0ffa5e.js"
+    "static/js/main.574566cb.js"
   ]
 }
