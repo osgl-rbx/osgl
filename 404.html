@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    const path = window.location.pathname;
+    
+    if (path.includes('/docs') || path.includes('/api')) {
+      window.history.replaceState({}, '', '/osgl' + path);
+    }
+    
+    window.location.href = '/osgl/index.html';
+  </script>
+</head>
+<body>
+  Redirecting...
+</body>
+</html>
