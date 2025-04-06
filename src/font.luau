@@ -1,31 +1,29 @@
+--!optimize 2
+--!native
+
 ------------------------------------------------------------
--- OSGL v1.5b - Open-Source-Graphical-Library
--- Copyright © 2023-2025 OSGL (@saaawdust)
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
 --
--- This software is provided ‘as-is’, without any express or implied warranty.
--- In no event will the authors be held liable for any damages arising from the use of this software.
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
 --
--- Permission is granted to anyone to use this software for any purpose,
--- including commercial applications, and to alter it and redistribute it freely,
--- subject to the following restrictions:
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
 --
--- 1. The origin of this software must not be misrepresented;
---	you must not claim that you wrote the original software.
---	If you use this software in a product, an acknowledgment
---	in the product documentation would be appreciated but is not required.
---
--- 2. Altered source versions must be plainly marked as such,
---	and must not be misrepresented as being the original software.
---
--- 3. This notice may not be removed or altered from any source distribution.
---
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
 ------------------------------------------------------------
 
 local OSGL = script.Parent
 local types = require(OSGL.types)
-local utils = require(OSGL.utils)
-local log = require(OSGL.log)
+local utils = require(OSGL.util)
 local draw = require(OSGL.draw)
+local result = require(OSGL.result)
+local oEnum = require(OSGL.enums)
+
+type Result<T, E> = result.Result<T, E>
 
 --[=[
 	@class Font
@@ -49,10 +47,10 @@ function splitStringWithEscapeSequences(input: string)
 
 		if char == "\\" and (nextChar == "t" or nextChar == "n") then
 			table.insert(result, "\\" .. nextChar)
-			i = i + 2
+			i += 2
 		else
 			table.insert(result, char)
-			i = i + 1
+			i += 1
 		end
 	end
 
@@ -85,6 +83,10 @@ end
 	@param color -- The color of the text
 	@return Font -- Returns itself.
 ]=]
+--[=[
+<strong>@OSGL/Font</strong>
+<em>Draws Text on-screen.</em>
+  ]=]
 function Font.Draw<T>(
 	self: types.Font,
 	object: types.DrawableObject<T>,
@@ -173,23 +175,17 @@ end
 	@param data -- The loaded font-date
 	@return Font -- Returns a new font.
 ]=]
-function Font.from(data: types.StoredFont): types.Font
+--[=[
+<strong>@OSGL/Font</strong>
+<em>Creates a new </em><code>Font</code><em> from loaded font-data.</em>
+  ]=]
+function Font.from(data: types.StoredFont): Result<types.Font, oEnum.FontError>
 	local v = data.version
 	if v and not table.find(utils.VALID_FONT_VERSIONS, v) then
-		local fontVers = utils.VALID_FONT_VERSIONS
-
-		log.error(
-			"Font version mismatch. Expected any version from "
-				.. fontVers[1]
-				.. " to "
-				.. fontVers[#fontVers]
-				.. ", got version "
-				.. v
-				.. ". This may cause unexpected behavior."
-		)
+        return result.new(false, oEnum.FontError.BadInput)
 	end
 
-	return {
+	return result.new(true, {
 		glyphs = data.letters,
 
 		_maxHeight = data.maxHeight,
@@ -197,7 +193,7 @@ function Font.from(data: types.StoredFont): types.Font
 		linePadding = 0,
 
 		Draw = Font.Draw,
-	}
+	})
 end
 
 return Font

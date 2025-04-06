@@ -1,37 +1,29 @@
 --!optimize 2
+--!native
 
 ------------------------------------------------------------
--- OSGL v1.5b - Open-Source-Graphical-Library
--- Copyright © 2023-2025 OSGL (@saaawdust)
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
 --
--- This software is provided ‘as-is’, without any express or implied warranty.
--- In no event will the authors be held liable for any damages arising from the use of this software.
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
 --
--- Permission is granted to anyone to use this software for any purpose,
--- including commercial applications, and to alter it and redistribute it freely,
--- subject to the following restrictions:
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
 --
--- 1. The origin of this software must not be misrepresented;
---    you must not claim that you wrote the original software.
---    If you use this software in a product, an acknowledgment
---    in the product documentation would be appreciated but is not required.
---
--- 2. Altered source versions must be plainly marked as such,
---    and must not be misrepresented as being the original software.
---
--- 3. This notice may not be removed or altered from any source distribution.
---
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
 ------------------------------------------------------------
 
 local OSGL = script.Parent.Parent
 local draw = OSGL.draw
 local types = require(OSGL.types)
 local color = require(OSGL.color)
-local mode = require(draw.mode)
+local pixel = require(draw.pixel)
 
 return function<T>(object: types.DrawableObject<T>, centerX: number, centerY: number, radius: number, fill: types.Color?, stroke: types.Color?, strokeThickness: number?, rotation: number?)
-    local pixel = mode.drawPixel
-	
+
 	fill = fill or color.BLACK
 	rotation = rotation or 0
 	stroke = stroke or color.TRANSPARENT
@@ -40,7 +32,7 @@ return function<T>(object: types.DrawableObject<T>, centerX: number, centerY: nu
 	local radius = radius
 	local strokeThickness = if stroke ~= color.TRANSPARENT then strokeThickness else 0
 
-	local sizeX, sizeY = object.sizeX, object.sizeY
+	local sizeX, sizeY = object.width, object.height
 	local radians = rotation * (math.pi / 180)
 	local cosTheta = math.cos(radians)
 	local sinTheta = math.sin(radians)

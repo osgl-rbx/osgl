@@ -1,262 +1,74 @@
---!strict
---!native
 --!optimize 2
+--!native
 
 ------------------------------------------------------------
--- OSGL v1.5b - Open-Source-Graphical-Library
--- Copyright © 2023-2025 OSGL (@saaawdust)
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
 --
--- This software is provided ‘as-is’, without any express or implied warranty.
--- In no event will the authors be held liable for any damages arising from the use of this software.
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
 --
--- Permission is granted to anyone to use this software for any purpose,
--- including commercial applications, and to alter it and redistribute it freely,
--- subject to the following restrictions:
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
 --
--- 1. The origin of this software must not be misrepresented;
---    you must not claim that you wrote the original software.
---    If you use this software in a product, an acknowledgment
---    in the product documentation would be appreciated but is not required.
---
--- 2. Altered source versions must be plainly marked as such,
---    and must not be misrepresented as being the original software.
---
--- 3. This notice may not be removed or altered from any source distribution.
---
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
 ------------------------------------------------------------
 
 local AssetService = game:GetService("AssetService")
 
-local OSGL = script.Parent.Parent
-local drawableObject = OSGL.DrawableObject
-local draw = OSGL.draw
+local DrawableObject = script.Parent
+local base = require(DrawableObject.base)
+
+local OSGL = DrawableObject.Parent
 local types = require(OSGL.types)
-local pixel = require(draw.pixel)
-local log = require(OSGL.log)
-local utils = require(drawableObject.utils)
-local osglUtils = require(OSGL.utils)
-local enum = require(OSGL.enum)
+local result = require(OSGL.result)
+local oEnum = require(OSGL.enums)
+local util = require(OSGL.util)
+local draw = require(OSGL.draw)
+local pixel = draw.Pixel
 
---[=[
-    @class Texture
+type Result<T, E> = result.Result<T, E>
 
-    The Texture class. Handles loading textures into memory
-    so you can draw them onto a [DrawableObject]. Inherits everything from
-    [DrawableObject]
-]=]
-local Texture = {}
-
-local clamp = math.clamp
 local floor = math.floor
 
---[=[
-	Creates a texture from textureData
+local Texture = {}
 
-	```lua
-	local OSGL = require(path.to.osgl)
-	local Texture = OSGL.Texture
-
-	local textureData = require(path.to.texture)
-	local texture = Texture.from(textureData)
-	```
-
-	@within Texture
-	@param textureData FlagTexture | ModuleScript -- The textureData
-	@return DrawableObject -- The loaded texture
-]=]
-function Texture.from<T>(textureData: types.FlagTexture | ModuleScript): types.Texture<T>
-	if typeof(textureData) == "Instance" and textureData:IsA("ModuleScript") then
-		textureData = require(textureData)
-	end
-
-	local width, height = textureData.width, textureData.height
-
-	local v = textureData.version
-	if v and not table.find(osglUtils.VALID_TEXTURE_VERSIONS, v) then
-		local txtVers = osglUtils.VALID_TEXTURE_VERSIONS
-
-		log.error(
-			"Texture version mismatch. Expected any version from "
-				.. txtVers[1]
-				.. " to "
-				.. txtVers[#txtVers]
-				.. ", got version "
-				.. v
-				.. ". This may cause unexpected behavior."
-		)
-	end
-
-	return {
-		alphaBlendingMode = enum.AlphaBlendMode.Overwrite,
-		buffer = textureData.pixels,
-
-		sizeX = width,
-		sizeY = height,
-		size = Vector2.new(width, height),
-
-		Draw = utils.createDraw(),
-		ReadPixel = utils.createReadPixel(),
-		WritePixel = utils.createWritePixel(),
-		OverwritePixel = utils.createOverwritePixel(),
-		TintRegion = utils.createTintRegion(),
-		Serialize = utils.createSerialize(),
-	}
-end
-
---[=[
-	Creates a texture of the given dimensions with an optional buffer
-
-	```lua
-	local OSGL = require(path.to.osgl)
-	local Texture = OSGL.Texture
-
-	local texture = Texture.new(5, 10)
-	```
-
-	@within Texture
-	@param width number -- The texture's width
-	@param height number -- The texture's height
-	@param bfr buffer? -- An optional buffer for textureData
-	@return DrawableObject -- The loaded texture
-]=]
-function Texture.new<T>(width: number, height: number, bfr: buffer?): types.Texture<T>
-	return {
-		alphaBlendingMode = enum.AlphaBlendMode.Overwrite,
-		buffer = bfr or buffer.create(width * height * 4),
-	
-		sizeX = width,
-		sizeY = height,
-		size = Vector2.new(width, height),
-	
-		Draw = utils.createDraw(),
-		ReadPixel = utils.createReadPixel(),
-		WritePixel = utils.createWritePixel(),
-		OverwritePixel = utils.createOverwritePixel(),
-		TintRegion = utils.createTintRegion(),
-		Serialize = utils.createSerialize(),
-	}
-end
-
---[=[
-	Draws a [DrawableObject] onto another [DrawableObject]
-
-	```lua
-	local OSGL = require(path.to.osgl)
-	local Texture = OSGL.Texture
-
-	local textureData = require(path.to.texture)
-	local secondTextureData = require(path.to.secondTexture)
-
-	local textureA = Texture.from(textureData)
-	local textureB = Texture.from(secondTextureData)
-
-	-- Draw textureB on textureA at 0, 0
-	local textureC = Texture.draw(textureA, textureB, 0, 0)
-	```
-
-	@within Texture
-	@param object DrawableObject -- The object that the texture will be drawn onto
-	@param texture DrawableObject -- The texture that will be drawn
-	@param spriteX number -- The X position of where the texture will be drawn
-	@param spriteY number -- The y position of where the texture will be drawn
-	@return DrawableObject -- The final texture
-]=]
-function Texture.draw<T>(
+local function drawRotated<T>(
 	object: types.DrawableObject<T>,
-	texture: types.Texture<T>,
-	spriteX: number,
-	spriteY: number
-): types.Texture<T>
-	local y2 = 0
-	local objectSizeY = object.sizeY
-	local objectSizeX = object.sizeX
-	local sizeY = texture.sizeY
-	local sizeX = texture.sizeX
-	local bfr = texture.buffer
-
-	for y = spriteY, spriteY + sizeY - 1 do
-		if y >= objectSizeY then
-			break
-		end
-
-		y2 = y - spriteY
-
-		local x2 = 0
-		for x = spriteX, spriteX + sizeX - 1 do
-			if x >= objectSizeX then
-				break
-			end
-
-			x2 = x - spriteX
-			if y2 < sizeY and x2 < sizeX then
-				pixel(object, x, y, buffer.readu32(bfr, (y2 * sizeX + x2) * 4))
-			end
-		end
-	end
-
-	return {
-		buffer = bfr,
-
-		sizeX = sizeX,
-		sizeY = sizeY,
-
-		Draw = object.Draw,
-		ReadPixel = object.ReadPixel,
-		TintRegion = object.TintRegion,
-		Serialize = object.Serialize,
-	}
-end
-
---[=[
-	Draws a [DrawableObject] onto another [DrawableObject] with a rotation. The pivot is at the center of the [DrawableObject]
-
-	```lua
-	local OSGL = require(path.to.osgl)
-	local Texture = OSGL.Texture
-
-	local textureData = require(path.to.texture)
-	local secondTextureData = require(path.to.secondTexture)
-
-	local textureA = Texture.from(textureData)
-	local textureB = Texture.from(secondTextureData)
-
-	-- Draw textureB on textureA at 0, 0, rotated 15 degrees
-	local textureC = Texture.draw(textureA, textureB, 0, 0, 15)
-	```
-
-	@within Texture
-	@param object DrawableObject -- The object that the texture will be drawn onto
-	@param texture DrawableObject -- The texture that will be drawn
-	@param spriteX number -- The X position of where the texture will be drawn
-	@param spriteY number -- The y position of where the texture will be drawn
-	@param rotation number -- The rotation of the texture
-	@return DrawableObject -- The final texture
-]=]
-function Texture.drawRotated<T>(
-	object: types.DrawableObject<T>,
-	texture: types.Texture<T>,
-	spriteX: number,
-	spriteY: number,
+	texture: types.OSGLTexture,
+	textureX: number,
+	textureY: number,
 	rotation: number
-): types.Texture<T>
-	local objectSizeY = object.sizeY
-	local objectSizeX = object.sizeX
-	local sizeY = texture.sizeY
-	local sizeX = texture.sizeX
+)
+	local sizeY = texture.height
+	local sizeX = texture.width
 	local bfr = texture.buffer
 
 	local radians = math.rad(rotation)
+	local cosR = math.cos(radians)
+	local sinR = math.sin(radians)
 
-	local centerX = sizeX / 2
-	local centerY = sizeY / 2
+	local centerX = textureX + sizeX / 2
+	local centerY = textureY + sizeY / 2
 
-	for y = 0, objectSizeY - 1 do
-		for x = 0, objectSizeX - 1 do
-			local relativeX = x - spriteX - centerX
-			local relativeY = y - spriteY - centerY
+	local function rotate(x: number, y: number): number
+		local relX = x - centerX
+		local relY = y - centerY
 
-			local sourceX = math.cos(radians) * relativeX + math.sin(radians) * relativeY + centerX
-			local sourceY = -math.sin(radians) * relativeX + math.cos(radians) * relativeY + centerY
+		local rotatedX = cosR * relX - sinR * relY
+		local rotatedY = sinR * relX + cosR * relY
+
+		return rotatedX + centerX, rotatedY + centerY
+	end
+
+	for y = 0, sizeY - 1 do
+		for x = 0, sizeX - 1 do
+			x += textureX
+			y += textureY
+
+			local sourceX, sourceY = rotate(x, y)
 
 			if sourceX >= 0 and sourceX < sizeX and sourceY >= 0 and sourceY < sizeY then
 				local pixelColor = buffer.readu32(bfr, floor(sourceY) * sizeX * 4 + floor(sourceX) * 4)
@@ -264,221 +76,244 @@ function Texture.drawRotated<T>(
 			end
 		end
 	end
-
-	return {
-		buffer = bfr,
-
-		sizeX = sizeX,
-		sizeY = sizeY,
-
-		Draw = object.Draw,
-		ReadPixel = object.ReadPixel,
-		TintRegion = object.TintRegion,
-		Serialize = object.Serialize,
-	}
 end
 
---[=[
-	Reads a rectangular selection of pixels from a [DrawableObject]
-
-	```lua
-	local OSGL = require(path.to.osgl)
-	local Texture = OSGL.Texture
-
-	local textureData = require(path.to.texture)
-	local texture = Texture.from(textureData)
-	-- Read a rectangular selection of pixels from 0, 5, with the
-	-- selection being 10x15 (150 pixels, from 0, 5)
-	local bfr, width, height = Texture.read(texture, 0, 5, 10, 15)
-	```
-
-	@within Texture
-	@param texture DrawableObject -- The texture that the selection of pixels will be taken from
-	@param xPos number -- The top-left X position of the selection
-	@param yPos number -- The top-left Y position of the selection
-	@param width number -- The width of the selection box
-	@param height number -- The height of the selection box
-	@return (buffer, number, number) -- A tuple containing the buffer-data, the width, and height
-]=]
-function Texture.read<T>(
-	texture: types.DrawableObject<T>,
-	xPos: number,
-	yPos: number,
-	width: number,
-	height: number
-): (buffer, number, number)
-	local sizeX = texture.sizeX
-	local sizeY = texture.sizeY
-	local txt = texture.buffer
-
-	if xPos < 0 or xPos > 1024 or yPos < 0 or yPos > 1024 then
-		log.warn(
-			"Attempt to read a texture from an invalid position (X: "
-				.. xPos
-				.. ", Y: "
-				.. yPos
-				.. "). Dimensions must be within the texture. The position has been clamped to fit inside the texture."
-		)
-	end
-
-	if width <= 0 or width > sizeX or height <= 0 or height > sizeY then
-		log.warn(
-			"Attempt to read from a texture with the width or height being out of bounds (Width: "
-				.. width
-				.. ", Height: "
-				.. height
-				.. "). All dimensions must be within the texture. The width / height has been automatically clamped to valid parameters."
-		)
-	end
-
-	local clampedXPos = clamp(xPos, 0, sizeX - 1)
-	local clampedYPos = clamp(yPos, 0, sizeY - 1)
-	local clampedWidth = clamp(width, 1, sizeX - clampedXPos)
-	local clampedHeight = clamp(height, 1, sizeY - clampedYPos)
-
-	local bfr = buffer.create(clampedWidth * clampedHeight * 4)
-	for h = 0, clampedHeight - 1 do
-		for w = 0, clampedWidth - 1 do
-			local textureIndex = ((clampedYPos + h) * sizeX + (clampedXPos + w)) * 4
-			local bufferIndex = (h * clampedWidth + w) * 4
-			buffer.writeu32(bfr, bufferIndex, buffer.readu32(txt, textureIndex))
-		end
-	end
-
-	return bfr, width, height
-end
-
---[=[
-	Scales a [DrawableObject] by the given amount
-
-	```lua
-	local OSGL = require(path.to.osgl)
-	local Texture = OSGL.Texture
-
-	local textureData = require(path.to.texture)
-	local texture = Texture.from(textureData)
-
-	-- Enlarge `texture` by 5x on the X axis
-	local enlargedTexture = Texture.scale(texture, 5)
-	```
-
-	@within Texture
-	@param texture DrawableObject -- The texture that will be enlarged
-	@param scaleX number -- Scaling for x axis. Defaults to 1
-	@param scaleY number -- Scaling for y axis. Defaults to 1
-	@return DrawableObject -- The enlarged texture
-]=]
-function Texture.scale<T>(texture: types.DrawableObject<T>, scaleX: number?, scaleY: number?): types.DrawableObject<T>
-	-- Set default values for scaleX and scaleY if not provided
-	scaleX = scaleX or 1
-	scaleY = scaleY or 1
-
-	-- Get original texture size and buffer
-	local originalSizeX = texture.sizeX
-	local originalSizeY = texture.sizeY
+local function drawRotatedUnchecked<T>(
+	object: types.DrawableObject<T>,
+	texture: types.OSGLTexture,
+	textureX: number,
+	textureY: number,
+	rotation: number
+)
+	local sizeY = texture.height
+	local sizeX = texture.width
 	local bfr = texture.buffer
 
-	-- Calculate the new size of the texture
-	local newSizeX = floor(originalSizeX * scaleX)
-	local newSizeY = floor(originalSizeY * scaleY)
+	local radians = math.rad(rotation)
+	local cosR = math.cos(radians)
+	local sinR = math.sin(radians)
 
-	local newBuffer = buffer.create(newSizeX * newSizeY * 4)
+	local centerX = textureX + sizeX / 2
+	local centerY = textureY + sizeY / 2
 
-	for y = 0, newSizeY - 1 do
-		for x = 0, newSizeX - 1 do
-			local sourceX = floor(x / scaleX)
-			local sourceY = floor(y / scaleY)
+	local function rotate(x: number, y: number): number
+		local relX = x - centerX
+		local relY = y - centerY
 
-			if sourceX < originalSizeX and sourceY < originalSizeY then
-				local color = buffer.readu32(bfr, sourceY * originalSizeX * 4 + sourceX * 4)
-				buffer.writeu32(newBuffer, y * newSizeX * 4 + x * 4, color)
-			end
-		end
+		local rotatedX = cosR * relX - sinR * relY
+		local rotatedY = sinR * relX + cosR * relY
+
+		return rotatedX + centerX, rotatedY + centerY
 	end
 
-	return {
-		buffer = newBuffer,
-		sizeX = newSizeX,
-		sizeY = newSizeY,
+	for y = 0, sizeY - 1 do
+		for x = 0, sizeX - 1 do
+			x += textureX
+			y += textureY
 
-		Draw = texture.Draw,
-		ReadPixel = texture.ReadPixel,
-		TintRegion = texture.TintRegion,
-		Serialize = texture.Serialize,
-	}
+			local sourceX, sourceY = rotate(x, y)
+
+			local pixelColor = buffer.readu32(bfr, floor(sourceY) * sizeX * 4 + floor(sourceX) * 4)
+			pixel(object, x, y, pixelColor)
+		end
+	end
+end
+
+local function checkUnloadedTexture(unloadedTexture: types.RawTexture): Result<types.BaseUnloadedTexture, oEnum.TextureError>
+	if typeof(unloadedTexture) == "Instance" and unloadedTexture:IsA("ModuleScript") then
+		unloadedTexture = require(unloadedTexture)
+	end
+
+	if type(unloadedTexture) ~= "table" or not table.find(util.VALID_TEXTURE_VERSIONS, unloadedTexture.version) then
+		return result.new(false, oEnum.TextureError.BadInput)
+	end
+
+	return result.new(true, unloadedTexture)
 end
 
 --[=[
-	Creates a [DrawableObject] (texture) from an assetId
+<strong>@OSGL/Texture</strong>
+<strong>@Checked</strong>
+<em>Creates a </em><code>Texture</code><em> from raw data.</em>
+  ]=]
+function Texture.fromChecked(rawTexture: types.RawTexture): Result<types.OSGLTexture, oEnum.TextureError>
+	local raw = checkUnloadedTexture(rawTexture)
 
-	```lua
-	local OSGL = require(path.to.osgl)
-	local Texture = OSGL.Texture
+	if not raw.isOk then
+		return raw
+	end
 
-	local textureData = require(path.to.texture)
-	local texture = Texture.fromAssetId(asset.id)
-	```
+	return result.new(true, Texture.fromUnchecked(raw:Unwrap()))
+end
 
-	@within Texture
-	@param assetId number -- The assetId that the texture will be
-	@error "Memory" -- This error occurs when the device doesn't have enough memory to create the texture
-	@return DrawableObject -- A finished texture that is the assetId
-]=]
-function Texture.fromAssetId<T>(assetId: number): types.Texture<T>
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Unchecked!</strong>
+<em>Creates a </em><code>Texture</code><em> from an unloaded one.</em>
+  ]=]
+function Texture.fromUnchecked(rawTexture: types.BaseUnloadedTexture): types.OSGLTexture
+	local width, height = rawTexture.width, rawTexture.height
+
+	local t = base.new()
+
+	t.buffer = rawTexture.pixels
+	t.width = width
+	t.height = height
+	t.size = Vector2.new(width, height)
+
+	return t
+end
+
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Checked</strong>
+<em>Serializes the </em><code>Texture</code><em>.</em>
+  ]=]
+function Texture.serializeChecked(rawTexture: types.RawTexture): Result<(buffer, number, number), oEnum.TextureError>
+	local texture = checkUnloadedTexture(rawTexture)
+
+	if not texture.isOk then
+		return rawTexture
+	end
+
+	return result.new(true, Texture.serializeUnchecked(texture:Unwrap()))
+end
+
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Unchecked!</strong>
+<em>Serializes the </em><code>Texture</code><em>.</em>
+  ]=]
+function Texture.serializeUnchecked(rawTexture: types.BaseUnloadedTexture): (buffer, number, number)
+	return rawTexture.pixels, rawTexture.width, rawTexture.height
+end
+
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Checked</strong>
+<em>Draws the </em><code>Texture</code><em> somwhere.</em>
+  ]=]
+function Texture.drawChecked<T>(
+	object: types.DrawableObject<T>,
+	texture: types.OSGLTexture,
+	textureX: number,
+	textureY: number,
+	rotation: number?
+)
+	rotation = rotation or 0
+
+	if rotation == 0 then
+		local y2 = 0
+		local objectSizeY = object.width
+		local objectSizeX = object.height
+		local width = texture.width
+		local height = texture.height
+		local bfr = texture.buffer
+
+		for y = textureY, textureY + width - 1 do
+			if y >= objectSizeY then
+				break
+			end
+
+			y2 = y - textureY
+
+			local x2 = 0
+			for x = textureX, textureX + height - 1 do
+				if x >= objectSizeX then
+					break
+				end
+
+				x2 = x - textureX
+				if y2 < width and x2 < height then
+					pixel(object, x, y, buffer.readu32(bfr, (y2 * height + x2) * 4))
+				end
+			end
+		end
+	else
+		drawRotated(object, texture, textureX, textureY, rotation)
+	end
+end
+
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Unchecked!</strong>
+<em>Draws the </em><code>Texture</code><em> somwhere.</em>
+  ]=]
+function Texture.drawUnchecked<T>(
+	object: types.DrawableObject<T>,
+	texture: types.OSGLTexture,
+	textureX: number,
+	textureY: number,
+	rotation: number?
+)
+	rotation = rotation or 0
+
+	if rotation == 0 then
+		local y2 = 0
+		local width = texture.width
+		local height = texture.height
+		local bfr = texture.buffer
+
+		for y = textureY, textureY + width - 1 do
+			y2 = y - textureY
+
+			local x2 = 0
+			for x = textureX, textureX + height - 1 do
+				x2 = x - textureX
+				pixel(object, x, y, buffer.readu32(bfr, (y2 * height + x2) * 4))
+			end
+		end
+	else
+		drawRotatedUnchecked(object, texture, textureX, textureY, rotation)
+	end
+end
+
+--[=[
+<strong>@OSGL/Texture</strong>
+<em>Creates a </em><code>Texture</code><em> from an asset id.</em>
+  ]=]
+function Texture.fromAssetId(assetId: number): Result<types.OSGLTexture, oEnum.DrawableObjectError>
 	local newContent = Content.fromAssetId(assetId)
 
-	-- [saaawdust]: Do I check if they can create an editable image or not? [1]
 	local temporaryEditableImage = AssetService:CreateEditableImageAsync(newContent)
 	if not temporaryEditableImage then
-		log.error("Could not make texture as the device does not have enough memory")
+		return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
 	end
 
 	local size = temporaryEditableImage.Size
 	local width, height = size.X, size.Y
 
-	-- [saaawdust]: Do I check if they can create an editable image or not? [2]
 	local pixelBuffer = temporaryEditableImage:ReadPixelsBuffer(Vector2.zero, size)
 	temporaryEditableImage:Destroy()
 
-	return {
-		alphaBlendingMode = enum.AlphaBlendMode.Overwrite,
-		buffer = pixelBuffer,
+	local t = base.new()
 
-		sizeX = width,
-		sizeY = height,
-		size = Vector2.new(width, height),
-	
-		Draw = utils.createDraw(),
-		ReadPixel = utils.createReadPixel(),
-		WritePixel = utils.createWritePixel(),
-		OverwritePixel = utils.createOverwritePixel(),
-		TintRegion = utils.createTintRegion(),
-		Serialize = utils.createSerialize(),
-	}
+	t.buffer = pixelBuffer
+	t.width = width
+	t.height = height
+	t.size = Vector2.new(width, height)
+
+	return result.new(true, t)
 end
 
 --[=[
-	@prop buffer buffer
-	@within DrawableObject
-	The buffer of the object
-]=]
+<strong>@OSGL/Texture</strong>
+<em>Creates a new </em><code>Texture</code><em> from the data provided.</em>
+  ]=]
+function Texture.new(width: number, height: number, bfr: buffer?): Result<types.OSGLTexture, oEnum.DrawableObjectError>
+	local len = width * height * 4
+	local buff = bfr or buffer.create(len)
 
---[=[
-	@prop sizeX number
-	@within DrawableObject
-	The width of the object
-]=]
+	if buffer.len(buff) ~= len then
+		return result.new(false, oEnum.DrawableObjectError.BadBufferSize)
+	end
 
---[=[
-	@prop sizeY number
-	@within DrawableObject
-	The height of the object
-]=]
+	local t = base.new()
+	t.width = width
+	t.height = height
+	t.buffer = buff
 
---[=[
-	@prop size Vector2
-	@within DrawableObject
-	The size of the object
-]=]
+	return result.new(true, t)
+end
 
 return Texture

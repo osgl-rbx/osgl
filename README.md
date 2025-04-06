@@ -1,29 +1,30 @@
-# OSGL
+<h3 align="center">
+  <img src="gh/Banner.svg" alt="OSGL Banner">
+  <div style="margin: 24px 0;">
+    <h4 align="center" style="margin: 0; line-height: 1.6;">
+      <i>A powerful, lightweight graphics library for Roblox.<br>
+      Draw videos, textures, fonts, and more, all at <b>blazingly fast</b> speeds.</i>
+    </h4>
+  </div>
+  <img src="gh/Seperation.svg" alt="Section divider" style="margin: 8px 0 24px;">
+</h3>
 
-![OSGL logo](gh/Banner.svg)
+<div align="center">
 
-OSGL is a user-friendly and highly efficient module that allows you to draw pixels directly to the screen in Roblox.
+## ✨ Features
 
-## Features
+<div style="max-width: 800px; margin: 0 auto; text-align: left;">
 
-- Easy to Learn: Designed with simplicity in mind, making it accessible for beginners and experienced developers alike.
-- High Performance: Optimized for fast rendering
+- **Beginner Friendly**
+  We've kept things super easy for you - an API that was designed with simplicity in mind - even if you're just starting out.
 
-## Installation
+- **Drawing go brrrrrrrr**
+  Built from the ground to handle whatever you throw at it with no problems.
 
-To get started with OSGL, download the latest official release from the releases tab.
+- **Thread-safe**
+  Plays *so* nice with threads you'd think they were childhood friends. Trust me.
 
-## Documentation
+- **It... just works!?**
+  Drop it into any Roblox project and it just works. No weird dependencies or special setup needed.
 
-For comprehensive guides and resources to help you master OSGL, check out our official documentation [here](https://osgl-rbx.github.io/osgl/)!
-There, you’ll find tutorials, examples, and API references to assist you in making the most of this library.
-
-## Authors
-
-OSGL is developed and maintained by an amazing team of contributors:
-
-- SawWasTaken
-- jukepilot
-- opensrcerror
-- msix29
-- Sle_l
+</div>

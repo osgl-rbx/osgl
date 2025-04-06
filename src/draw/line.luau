@@ -1,45 +1,36 @@
 --!optimize 2
+--!native
 
 ------------------------------------------------------------
--- OSGL v1.5b - Open-Source-Graphical-Library
--- Copyright © 2023-2025 OSGL (@saaawdust)
+-- OSGL v1.6b - Open-Source Graphical Library
+-- Created/maintained by @saaawdust and contributors
 --
--- This software is provided ‘as-is’, without any express or implied warranty.
--- In no event will the authors be held liable for any damages arising from the use of this software.
+-- Free to use, modify and distribute in your projects (including commercial games ;3)
+-- Credit appreciated but not required
 --
--- Permission is granted to anyone to use this software for any purpose,
--- including commercial applications, and to alter it and redistribute it freely,
--- subject to the following restrictions:
+-- Do NOT:
+-- - Repackage and sell OSGL directly
+-- - Claim you created the core library
 --
--- 1. The origin of this software must not be misrepresented;
---    you must not claim that you wrote the original software.
---    If you use this software in a product, an acknowledgment
---    in the product documentation would be appreciated but is not required.
---
--- 2. Altered source versions must be plainly marked as such,
---    and must not be misrepresented as being the original software.
---
--- 3. This notice may not be removed or altered from any source distribution.
---
+-- By using OSGL, you agree to these terms.
+-- Full license available in the LICENSE file
 ------------------------------------------------------------
 
-local OSGL = script.Parent.Parent
-local draw = OSGL.draw
-local mode = require(draw.mode)
-
+local Draw = script.Parent
+local OSGL = Draw.Parent
 local types = require(OSGL.types)
+local pixel = require(Draw.pixel)
+local color = require(OSGL.color)
 
-return function<T>(object: types.DrawableObject<T>, startX: number, startY: number, stopX: number, stopY: number, thickness: number, color: types.Color)
-    local pixel = mode.drawPixel
-	
+return function<T>(object: types.DrawableObject<T>, startX: number, startY: number, stopX: number, stopY: number, thickness: number, c: types.Color)
 	thickness = thickness or 1
-	color = color or color.BLACK
+	c = c or color.BLACK
 
 	if thickness == 0 then
 		return
 	end
 
-	local sizeX, sizeY = object.sizeX, object.sizeY
+	local width, height = object.width, object.height
 
 	local dx = stopX - startX
 	local dy = stopY - startY
@@ -52,21 +43,21 @@ return function<T>(object: types.DrawableObject<T>, startX: number, startY: numb
 	local x = startX
 	local y = startY
 
-	local function drawThickPoint(px: number, py: number, thickness: number)
+	local function drawThickPoint(px: number, py: number)
 		local halfThickness = thickness / 2
 		for offsetX = -halfThickness, halfThickness do
 			for offsetY = -halfThickness, halfThickness do
-				local pixelX = math.floor(px + offsetX + 0.5)
-				local pixelY = math.floor(py + offsetY + 0.5)
-				if pixelX >= 0 and pixelX < sizeX and pixelY >= 0 and pixelY < sizeY then
-					pixel(object, pixelX, pixelY, color)
+				local pixelX = math.floor(px + offsetX + .5)
+				local pixelY = math.floor(py + offsetY + .5)
+				if pixelX >= 0 and pixelX < width and pixelY >= 0 and pixelY < height then
+					pixel(object, pixelX, pixelY, c)
 				end
 			end
 		end
 	end
 
 	for _ = 0, steps do
-		drawThickPoint(x, y, thickness)
+		drawThickPoint(x, y)
 		x += xIncrement
 		y += yIncrement
 	end
