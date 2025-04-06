@@ -3,12 +3,14 @@
 <head>
   <script>
     const path = window.location.pathname;
+    const isDocsOrApi = path.includes('/docs') || path.includes('/api');
     
-    if (path.includes('/docs') || path.includes('/api')) {
-      window.history.replaceState({}, '', '/osgl' + path);
+    if (isDocsOrApi) {
+      window.history.replaceState({}, '', '/osgl');
+      window.location.href = '/osgl/index.html#' + path;
+    } else {
+      window.location.href = '/osgl/index.html';
     }
-    
-    window.location.href = '/osgl/index.html';
   </script>
 </head>
 <body>
