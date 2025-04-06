@@ -2,18 +2,13 @@
 <html>
 <head>
   <script>
+    // Redirect all 404s to index.html while preserving path
     const path = window.location.pathname;
-    const isDocsOrApi = path.includes('/docs') || path.includes('/api');
-    
-    if (isDocsOrApi) {
-      window.history.replaceState({}, '', '/osgl');
-      window.location.href = '/osgl/index.html#' + path;
-    } else {
-      window.location.href = '/osgl/index.html';
+    if (path.startsWith('/osgl')) {
+      window.history.replaceState({}, '', '/osgl/index.html');
+      window.location.reload();
     }
   </script>
 </head>
-<body>
-  Redirecting...
-</body>
+<body></body>
 </html>
