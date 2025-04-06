@@ -2,13 +2,17 @@
 <html>
 <head>
   <script>
-    // Redirect all 404s to index.html while preserving path
+    // Capture the original path
     const path = window.location.pathname;
-    if (path.startsWith('/osgl')) {
-      window.history.replaceState({}, '', '/osgl/index.html');
-      window.location.reload();
+    
+    // Handle routes under /osgl
+    if (path.startsWith('/osgl/docs') || path.startsWith('/osgl/api')) {
+      // Convert to hash-based URL
+      window.location.href = '/osgl/index.html#' + path;
     }
   </script>
 </head>
-<body></body>
+<body>
+  Redirecting...
+</body>
 </html>
