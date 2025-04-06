@@ -1,5 +1,5 @@
 <h3 align="center">
-  <img src="gh/Banner.svg" alt="OSGL Banner">
+  <img src="https://raw.githubusercontent.com/osgl-rbx/osgl/6c648cbffe55ffd189a54961e83def048583c76d/gh/Banner.svg" alt="OSGL Banner">
   <div style="margin: 24px 0;">
     <h4 align="center" style="margin: 0; line-height: 1.6;">
       <i>A powerful, lightweight graphics library for Roblox.<br>
