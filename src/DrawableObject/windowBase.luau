@@ -111,6 +111,20 @@ function WindowBaseImpl.GetRelativeMousePosition(self: types.Window, image: type
 	return isInImage, isInImage and x or 0, isInImage and y or 0
 end
 
+--[=[
+<strong>@OSGL/Window</strong>
+<em>Destroys all information associated with the </em><code>Window</code><em>.</em>
+  ]=]
+function WindowBaseImpl.Destroy(self: types.Window)
+	self.editableImage:Destroy()
+
+	for _, v in self.surfaces do
+		v[util.getRendererProp(v)] = Content.none
+	end
+
+	table.clear(self)
+end
+
 export type WindowBase = base.Base & typeof(WindowBaseImpl)
 
 return {
@@ -122,6 +136,7 @@ return {
 		t.RemoveRenderers = WindowBaseImpl.RemoveRenderers
 		t.GetRelativeMousePosition = WindowBaseImpl.GetRelativeMousePosition
         t.RenderTargetFPS = WindowBaseImpl.RenderTargetFPS
+		t.Destroy = WindowBaseImpl.Destroy
 
 		return t
 	end,

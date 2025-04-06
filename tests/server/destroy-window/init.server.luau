@@ -26,6 +26,12 @@ if not myWindow.isOk then
 end
 
 local unwrappedWindow: OSGL.Window = myWindow:Unwrap()
+print("Test started")
 
-unwrappedWindow:Resample(2)
-unwrappedWindow:Render()
+for i = 1, 5 do 
+	print(`Window is destroyed in {5 - i} seconds, watch memory usage`)
+	task.wait(1)
+end
+
+print("Window destroyed")
+unwrappedWindow:Destroy()

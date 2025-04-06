@@ -33,7 +33,8 @@ export type Window = DrawableObject<Window> & {
     RenderTargetFPS: (self: Window) -> (),
     AddRenderers: (self: Window, ...Drawable) -> (),
     RemoveRenderers: (self: Window, ...Drawable) -> (),
-    GetRelativeMousePosition: (self: Window, image: ImageBase) -> (boolean, number, number)
+    GetRelativeMousePosition: (self: Window, image: ImageBase) -> (boolean, number, number),
+    Destroy: (self: Window) -> (),
 }
 
 export type DrawableObject<T> = DrawingContext<DrawableObject<T>> & {
@@ -56,6 +57,7 @@ export type DrawableObject<T> = DrawingContext<DrawableObject<T>> & {
 
 export type DrawingContext<T> = {
     Pixel: (self: T, X: number, Y: number, Color: Color) -> nil,
+    PixelIndex: (self: T, Index: number, Color: Color) -> nil,
     Line: (self: T, X1: number, Y1: number, X2: number, Y2: number, Thickness: number, Color: Color?) -> nil,
     Rectangle: (self: T, X: number, Y: number, Width: number, Height: number, Fill: Color?, Stroke: Color?, StrokeThickness: number?, Rotation: number?) -> nil,
     Polygon: (self: T, Corners: { { number } }, Fill: Color, StrokeColor: Color?, StrokeWidth: number?) -> nil,
@@ -74,7 +76,7 @@ export type BaseRawTexture<T> = {
 }
 
 export type BaseUnloadedTexture = BaseRawTexture<"1.6b">
-export type Texture = DrawableObject<Texture>
+export type OSGLTexture = DrawableObject<OSGLTexture>
 export type RawTexture = ModuleScript | BaseUnloadedTexture
 export type Bitmap = {
     channels: number,

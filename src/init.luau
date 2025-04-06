@@ -18,7 +18,7 @@ local types = require(script.types)
 
 export type Window = types.Window
 export type Color = types.Color
-export type Texture = types.Texture
+export type Texture = types.OSGLTexture
 export type Bitmap = types.Bitmap
 export type Video = types.Video
 export type Font = types.Font

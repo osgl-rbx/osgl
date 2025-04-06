@@ -297,6 +297,7 @@ return {
 			Resample = DrawBaseImpl.Resample,
 			
 			Pixel = draw.Pixel,
+			PixelIndex = draw.PixelIndex,
 			Line = draw.Line,
 			Rectangle = draw.Rectangle,
 			Polygon = draw.Polygon,

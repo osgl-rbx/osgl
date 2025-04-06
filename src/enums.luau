@@ -16,6 +16,7 @@
 local WindowError = {
     InvalidCreationInstance = 0 :: WindowError,
     WindowDimensionsOutOfBounds = 1 :: WindowError,
+    APINotEnabled = 8 :: WindowError,
 }
 
 local DrawableObjectError = {
@@ -30,7 +31,7 @@ local TextureError = {
 }
 
 local FontError = {
-    BadInput = 6 :: TextureError,
+    BadInput = 7 :: TextureError,
 }
 
 local enums = {

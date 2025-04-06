@@ -37,7 +37,7 @@ local Texture = {}
 
 local function drawRotated<T>(
 	object: types.DrawableObject<T>,
-	texture: types.Texture,
+	texture: types.OSGLTexture,
 	textureX: number,
 	textureY: number,
 	rotation: number
@@ -80,7 +80,7 @@ end
 
 local function drawRotatedUnchecked<T>(
 	object: types.DrawableObject<T>,
-	texture: types.Texture,
+	texture: types.OSGLTexture,
 	textureX: number,
 	textureY: number,
 	rotation: number
@@ -136,7 +136,7 @@ end
 <strong>@Checked</strong>
 <em>Creates a </em><code>Texture</code><em> from raw data.</em>
   ]=]
-function Texture.fromChecked(rawTexture: types.RawTexture): Result<types.Texture, oEnum.TextureError>
+function Texture.fromChecked(rawTexture: types.RawTexture): Result<types.OSGLTexture, oEnum.TextureError>
 	local raw = checkUnloadedTexture(rawTexture)
 
 	if not raw.isOk then
@@ -151,7 +151,7 @@ end
 <strong>@Unchecked!</strong>
 <em>Creates a </em><code>Texture</code><em> from an unloaded one.</em>
   ]=]
-function Texture.fromUnchecked(rawTexture: types.BaseUnloadedTexture): types.Texture
+function Texture.fromUnchecked(rawTexture: types.BaseUnloadedTexture): types.OSGLTexture
 	local width, height = rawTexture.width, rawTexture.height
 
 	local t = base.new()
@@ -195,7 +195,7 @@ end
   ]=]
 function Texture.drawChecked<T>(
 	object: types.DrawableObject<T>,
-	texture: types.Texture,
+	texture: types.OSGLTexture,
 	textureX: number,
 	textureY: number,
 	rotation: number?
@@ -241,7 +241,7 @@ end
   ]=]
 function Texture.drawUnchecked<T>(
 	object: types.DrawableObject<T>,
-	texture: types.Texture,
+	texture: types.OSGLTexture,
 	textureX: number,
 	textureY: number,
 	rotation: number?
@@ -272,7 +272,7 @@ end
 <strong>@OSGL/Texture</strong>
 <em>Creates a </em><code>Texture</code><em> from an asset id.</em>
   ]=]
-function Texture.fromAssetId(assetId: number): Result<types.Texture, oEnum.DrawableObjectError>
+function Texture.fromAssetId(assetId: number): Result<types.OSGLTexture, oEnum.DrawableObjectError>
 	local newContent = Content.fromAssetId(assetId)
 
 	local temporaryEditableImage = AssetService:CreateEditableImageAsync(newContent)
@@ -300,7 +300,7 @@ end
 <strong>@OSGL/Texture</strong>
 <em>Creates a new </em><code>Texture</code><em> from the data provided.</em>
   ]=]
-function Texture.new(width: number, height: number, bfr: buffer?): Result<types.Texture, oEnum.DrawableObjectError>
+function Texture.new(width: number, height: number, bfr: buffer?): Result<types.OSGLTexture, oEnum.DrawableObjectError>
 	local len = width * height * 4
 	local buff = bfr or buffer.create(len)
 

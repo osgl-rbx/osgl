@@ -38,7 +38,7 @@ local function dynamicCreateEditableImage(
 		return result.new(false, oEnum.WindowError.InvalidCreationInstance)
 	end
 
-	if width < 1 or width > 1024 or height < 1 or height > 1024 then
+	if not width or not height or width < 1 or width > 1024 or height < 1 or height > 1024 then
 		return result.new(false, oEnum.WindowError.WindowDimensionsOutOfBounds)
 	end
 
@@ -52,6 +52,14 @@ local function dynamicCreateEditableImage(
 		return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
 	end
 
+	local success, error = pcall(function()
+		return EditableImage:WritePixelsBuffer(Vector2.zero, Vector2.one, buffer.create(4))
+	end)
+
+	if not success and error == "EditableImage is not accessible. Go to the Security Tab in Game Settings to enable this API." then
+		return result.new(false, oEnum.WindowError.APINotEnabled)
+	end
+
 	return result.new(true, EditableImage)
 end
 
@@ -60,6 +68,11 @@ end
 <em>Creates a new </em><code>Window</code></em><em> object given a </em><code>EditableImage</code><em>.</em>
   ]=]
 function Window.new(editableImage: EditableImage, renderers: { types.Drawable }): types.Window
+	-- Check if the EditableImage can be used
+	local S, E = pcall(function()
+		return editableImage:WritePixelsBuffer(Vector2.zero, Vector2.new(1, 1), buffer.create(4))
+	end)
+	
 	local content = Content.fromObject(editableImage)
 	for _, renderObject in ipairs(renderers) do
 		local sourceProperty = Window.getRenderingProperty(renderObject)

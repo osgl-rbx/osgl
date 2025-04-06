@@ -14,6 +14,7 @@
 ------------------------------------------------------------
 
 local Pixel = require(script.pixel)
+local PixelIndex = require(script.pixelIndex)
 local Line = require(script.line)
 local Rect = require(script.rect)
 local Polygon = require(script.polygon)
@@ -25,6 +26,7 @@ local Clear = require(script.clear)
 
 return {
     Pixel = Pixel,
+    PixelIndex = PixelIndex,
     Line = Line,
     Rectangle = Rect,
     Polygon = Polygon,
