@@ -57,9 +57,9 @@ end
 <em>Adds an additional list of objects to render the </em><code>Window</code><em> to.</em>
   ]=]
 function WindowBaseImpl.AddRenderers(self: types.Window, ...: types.Drawable)
-	for _, v in table.pack(...) do
+	for _, v in {...} do
 		if not table.find(self.surfaces, v) then
-			local prop = util.getRendererProp()
+			local prop = util.getRendererProp(v)
 			if prop == "" then
 				return
 			end
@@ -76,10 +76,10 @@ end
 <em>Removes a list of objects that the </em><code>Window</code><em> is currently rendering to</em>
   ]=]
 function WindowBaseImpl.RemoveRenderers(self: types.Window, ...: types.Drawable)
-	for _, v in table.pack(...) do
+	for _, v in {...} do
 		local indexFound = table.find(self.surfaces, v)
 		if indexFound then
-			local prop = util.getRendererProp()
+			local prop = util.getRendererProp(v)
 			if prop == "" then
 				return
 			end
