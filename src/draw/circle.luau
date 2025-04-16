@@ -20,47 +20,53 @@ local OSGL = script.Parent.Parent
 local draw = OSGL.draw
 local types = require(OSGL.types)
 local color = require(OSGL.color)
-local pixel = require(draw.pixel)
+local chunk = require(draw.chunk)
 
-return function<T>(object: types.DrawableObject<T>, centerX: number, centerY: number, radius: number, fill: types.Color?, stroke: types.Color?, strokeThickness: number?, rotation: number?)
-
+return function<T>(
+	object: types.DrawableObject<T>,
+	centerX: number, centerY: number, radius: number,
+	fill: types.Color?, stroke: types.Color?, strokeThickness: number?
+)
 	fill = fill or color.BLACK
-	rotation = rotation or 0
 	stroke = stroke or color.TRANSPARENT
 	strokeThickness = strokeThickness or 0
 
-	local radius = radius
-	local strokeThickness = if stroke ~= color.TRANSPARENT then strokeThickness else 0
-
 	local sizeX, sizeY = object.width, object.height
-	local radians = rotation * (math.pi / 180)
-	local cosTheta = math.cos(radians)
-	local sinTheta = math.sin(radians)
+
+	-- Only apply stroke if it's not transparent
+	strokeThickness = (stroke ~= color.TRANSPARENT) and strokeThickness or 0
 
 	local radiusSquared = radius * radius
-	local totalRadius = strokeThickness + radius
+	local totalRadius = radius + strokeThickness
 	local strokeSquared = totalRadius * totalRadius
 
-	for y = -totalRadius, totalRadius do
-		local ySquared = y * y
+	for dy = -totalRadius, totalRadius do
+		local y = centerY + dy
+		if y < 0 or y >= sizeY then
+            continue
+        end
 
-		for x = -totalRadius, totalRadius do
-			local distance = x * x + ySquared
+		local dySquared = dy * dy
+		local innerX = math.floor(math.sqrt(math.max(radiusSquared - dySquared, 0)))
+		local outerX = math.floor(math.sqrt(math.max(strokeSquared - dySquared, 0)))
 
-			if distance <= strokeSquared then
-				local pixelColor = if distance <= radiusSquared then fill else stroke
+        local startX = math.clamp(centerX - innerX, 0, sizeX - 1)
+        local endX = math.clamp(centerX + innerX, 0, sizeX - 1)
+        if endX >= startX then
+            chunk(object, fill, startX, y, endX, y)
+        end
 
-				local rotatedX = x * cosTheta - y * sinTheta
-				local rotatedY = x * sinTheta + y * cosTheta
+		if strokeThickness > 0 and outerX > innerX then
+			local leftStart = math.clamp(centerX - outerX, 0, sizeX - 1)
+			local leftEnd = math.clamp(centerX - innerX - 1, 0, sizeX - 1)
+			if leftEnd >= leftStart then
+				chunk(object, stroke, leftStart, y, leftEnd,y)
+			end
 
-				-- TODO: [saaawdust]: Fix holes.
-				local pixelX = math.floor(centerX + rotatedX + 0.5) -- Snap to nearest pixel
-				local pixelY = math.floor(centerY + rotatedY + 0.5)
-
-				-- Bounds check and pixel writing
-				if pixelX >= 0 and pixelX < sizeX and pixelY >= 0 and pixelY < sizeY then
-					pixel(object, pixelX, pixelY, pixelColor)
-				end
+			local rightStart = math.clamp(centerX + innerX + 1, 0, sizeX - 1)
+			local rightEnd = math.clamp(centerX + outerX, 0, sizeX - 1)
+			if rightEnd >= rightStart then
+				chunk(object, stroke, rightStart, y, rightEnd, y)
 			end
 		end
 	end
