@@ -78,7 +78,7 @@ function DrawBaseImpl.Resize<T>(
 		if not editableImage then
 			return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
 		end
-		
+
 		self.editableImage = editableImage
 		local content = Content.fromObject(editableImage)
 		for _, v in self.surfaces do
@@ -262,7 +262,7 @@ end
         if not editableImage then
             return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
         end
-        
+
         self.editableImage = editableImage
         local content = Content.fromObject(editableImage)
         for _, v in self.surfaces do
@@ -295,7 +295,7 @@ return {
 			TintRegionUnchecked = DrawBaseImpl.TintRegionUnchecked,
 			Tint = DrawBaseImpl.Tint,
 			Resample = DrawBaseImpl.Resample,
-			
+
 			Pixel = draw.Pixel,
 			PixelIndex = draw.PixelIndex,
 			Line = draw.Line,
@@ -305,6 +305,7 @@ return {
 			Circle = draw.Circle,
 			Buffer = draw.Buffer,
 			Clear = draw.Clear,
+			Chunk = draw.Chunk,
 		}
 	end
 }

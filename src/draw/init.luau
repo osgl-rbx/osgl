@@ -23,6 +23,7 @@ local Circle = require(script.circle)
 local Buffer = require(script.buffer)
 
 local Clear = require(script.clear)
+local Chunk = require(script.chunk)
 
 return {
     Pixel = Pixel,
@@ -35,4 +36,5 @@ return {
     Buffer = Buffer,
 
     Clear = Clear,
+    Chunk = Chunk,
 }
