@@ -306,6 +306,7 @@ return {
 			Buffer = draw.Buffer,
 			Clear = draw.Clear,
 			Chunk = draw.Chunk,
+			FloodFill = draw.FloodFill,
 		}
 	end
 }

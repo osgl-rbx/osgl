@@ -21,6 +21,7 @@ local Polygon = require(script.polygon)
 local Triangle = require(script.triangle)
 local Circle = require(script.circle)
 local Buffer = require(script.buffer)
+local FloodFill = require(script.floodFill)
 
 local Clear = require(script.clear)
 local Chunk = require(script.chunk)
@@ -34,6 +35,7 @@ return {
     Triangle = Triangle,
     Circle = Circle,
     Buffer = Buffer,
+    FloodFill = FloodFill,
 
     Clear = Clear,
     Chunk = Chunk,
