@@ -26,7 +26,5 @@ if not myWindow.isOk then
 end
 
 local unwrappedWindow: OSGL.Window = myWindow:Unwrap()
-local EI = unwrappedWindow.editableImage
 unwrappedWindow:Destroy()
 
-print(EI:DrawRectangle(Vector2.zero, Vector2.one, Color3.new(1, 0, 0), 0.5, Enum.ImageCombineType.Overwrite))

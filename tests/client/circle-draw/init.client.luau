@@ -34,6 +34,7 @@ while task.wait() do
         continue
     end
     
-    unwrappedWindow:Circle(X, Y, 500, color.RED)
+    unwrappedWindow:Clear()
+    unwrappedWindow:Circle(X, Y, 500, color.RED, color.BLACK, 50)
     unwrappedWindow:Render()
 end

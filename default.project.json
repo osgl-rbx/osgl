@@ -7,10 +7,15 @@
                 "$path": "src"
             }
         },
+        "ServerScriptService": {
+            "tests": {
+                "$path": "tests/server"
+            }
+        },
         "StarterPlayer": {
             "StarterPlayerScripts": {
                 "tests": {
-                    "$path": "tests"
+                    "$path": "tests/client"
                 }
             }
         }

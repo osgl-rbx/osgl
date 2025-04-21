@@ -62,7 +62,9 @@ export type DrawingContext<T> = {
     Rectangle: (self: T, X: number, Y: number, Width: number, Height: number, Fill: Color?, Stroke: Color?, StrokeThickness: number?, Rotation: number?) -> nil,
     Polygon: (self: T, Corners: { { number } }, Fill: Color, StrokeColor: Color?, StrokeWidth: number?) -> nil,
     Triangle: (self: T, X1: number, Y1: number, X2: number, Y2: number, X3: number, Y3: number, Fill: Color?, Stroke: Color?, StrokeThickness: number?) -> nil,
-    Circle: (self: T, CenterX: number, CenterY: number, Radius: number, Fill: Color?, Stroke: Color?, StrokeThickness: number?, Rotation: number?) -> nil,
+    Circle: (self: T, CenterX: number, CenterY: number, Radius: number, Fill: Color?, Stroke: Color?, StrokeThickness: number?) -> nil,
+    Chunk: (self: T, color: Color, x1: number, y1: number, x2: number, y2: number) -> nil,
+    FloodFill: (self: T, x: number, y: number, color: Color) -> nil,
     Buffer: (self: T, Buffer: buffer, Width: number, Height: number, X: number, Y: number) -> nil,
 
     Clear: (self: T, Color: Color?) -> nil,

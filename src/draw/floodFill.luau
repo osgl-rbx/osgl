@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.5b - Open-Source-Graphical-Library
+-- OSGL v1.6b - Open-Source-Graphical-Library
 -- Copyright © 2023-2025 OSGL (@saaawdust)
 --
 -- This software is provided ‘as-is’, without any express or implied warranty.
@@ -25,10 +25,7 @@
 ------------------------------------------------------------
 
 local OSGL = script.Parent.Parent
-local draw = OSGL.draw
 local types = require(OSGL.types)
-local color = require(OSGL.color)
-local mode = require(draw.mode)
 
 function getIndex(x, y, sizeX)
     return (y * sizeX + x) * 4
@@ -39,13 +36,11 @@ function offsetIndex(i, x, y, sizeX)
 end
 
 return function<T>(object: types.DrawableObject<T>, x: number, y: number, color: types.Color)
-	local pixel = mode.drawPixel
-
 	x = x or 0
 	y = y or 0
 
 	local sizeX, sizeY = object.sizeX, object.sizeY
-	local originalColor = object:ReadPixel(x, y)
+	local originalColor = object:ReadPixelUnchecked(x, y)
 
 	-- Creates more than enough memory, better optimization.
 	local checked = table.create(sizeX * sizeY, false)
