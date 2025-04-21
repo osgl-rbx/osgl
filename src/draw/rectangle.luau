@@ -1,7 +1,7 @@
 --!optimize 2
 
 ------------------------------------------------------------
--- OSGL v1.6b - Open-Source-Graphical-Library
+-- OSGL v1.6.1 - Open-Source-Graphical-Library
 -- Copyright © 2023-2025 OSGL (@saaawdust)
 --
 -- This software is provided ‘as-is’, without any express or implied warranty.
@@ -32,7 +32,7 @@ local mode = require(draw.mode)
 
 return function<T>(object: types.DrawableObject<T>, xPos: number, yPos: number, width: number, height: number, fill: types.Color?, stroke: types.Color?, strokeThickness: number?, rotation: number?)
     local pixel = mode.drawPixel
-	
+
 	fill = fill or color.BLACK
 	rotation = rotation or 0
 	stroke = stroke or color.TRANSPARENT
@@ -59,7 +59,7 @@ return function<T>(object: types.DrawableObject<T>, xPos: number, yPos: number, 
 
 		for x = 0, w  do
 			x += xPos
-			
+
 			if x >= sizeX then
 				continue
 			end
@@ -95,7 +95,7 @@ return function<T>(object: types.DrawableObject<T>, xPos: number, yPos: number, 
 	local x1, y1 = rotatePoint(xPos + width, yPos)
 	local x2, y2 = rotatePoint(xPos + width, yPos + height)
 	local x3, y3 = rotatePoint(xPos, yPos + height)
-    
+
 
 	fillPolygon(object, {
 		{ x0, y0 },

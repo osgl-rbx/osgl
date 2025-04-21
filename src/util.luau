@@ -1,5 +1,5 @@
 ------------------------------------------------------------
--- OSGL v1.6b - Open-Source Graphical Library
+-- OSGL v1.6.1 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -14,8 +14,8 @@
 ------------------------------------------------------------
 
 local util = {}
-util.VALID_TEXTURE_VERSIONS = { "1.5b", "1.6b" }
-util.VALID_FONT_VERSIONS = { "1.5b", "1.6b" }
+util.VALID_TEXTURE_VERSIONS = { "1.5b", "1.6b", "1.6.1" }
+util.VALID_FONT_VERSIONS = { "1.5b", "1.6b", "1.6.1" }
 
 function util.getRendererProp(object: Instance): string
 	if object:IsA("ImageLabel") or object:IsA("ImageButton") then

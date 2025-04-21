@@ -6,7 +6,7 @@ local WIDTH = 50
 local HEIGHT = 50
 
 local fakeBitmap = {
-	version = "1.6b",
+	version = "1.6.1",
 	pixels = buffer.fromstring(string.rep("\255\127", WIDTH * HEIGHT)),
 	width = WIDTH,
 	height = HEIGHT,

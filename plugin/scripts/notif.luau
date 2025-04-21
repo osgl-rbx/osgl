@@ -1,5 +1,5 @@
 ------------------------------------------------------------
--- OSGL v1.6b - Open-Source Graphical Library
+-- OSGL v1.6.1 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -61,7 +61,7 @@ function Notifications.invoke(message: string)
     local notifContents = newMessage.Notif.Content.Contents
     local textObject = notifContents.Info
     textObject.Text = message
-    
+
     newMessage.Parent = notifGui
     newMessage.Size = UDim2.fromOffset(math.max(textObject.TextBounds.X, 32) + 88, math.max(textObject.TextBounds.Y, 32) + 27.4)
 

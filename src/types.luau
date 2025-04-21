@@ -1,5 +1,5 @@
 ------------------------------------------------------------
--- OSGL v1.6b - Open-Source Graphical Library
+-- OSGL v1.6.1 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -77,7 +77,7 @@ export type BaseRawTexture<T> = {
     pixels: buffer
 }
 
-export type BaseUnloadedTexture = BaseRawTexture<"1.6b">
+export type BaseUnloadedTexture = BaseRawTexture<"1.6.1">
 export type OSGLTexture = DrawableObject<OSGLTexture>
 export type RawTexture = ModuleScript | BaseUnloadedTexture
 export type Bitmap = {

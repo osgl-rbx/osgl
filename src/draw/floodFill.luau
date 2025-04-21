@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.6b - Open-Source-Graphical-Library
+-- OSGL v1.6.1 - Open-Source-Graphical-Library
 -- Copyright © 2023-2025 OSGL (@saaawdust)
 --
 -- This software is provided ‘as-is’, without any express or implied warranty.
@@ -46,7 +46,7 @@ return function<T>(object: types.DrawableObject<T>, x: number, y: number, color:
 	local checked = table.create(sizeX * sizeY, false)
 	local stack = table.create(sizeX * sizeY, 0)
 	stack[1] = getIndex(x, y, sizeX)
-   
+
 	local MAX_INDEX = getIndex(sizeX - 1, sizeY - 1, sizeX)
     local bfr = object.buffer
 	while #stack > 0 do
@@ -57,7 +57,7 @@ return function<T>(object: types.DrawableObject<T>, x: number, y: number, color:
 			continue
 		end
 		checked[currentIndex] = true
-        
+
 		if buffer.readu32(bfr, currentIndex) ~= originalColor then
 			continue
 		end

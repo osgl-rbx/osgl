@@ -1,5 +1,5 @@
 ------------------------------------------------------------
--- OSGL v1.6b - Open-Source Graphical Library
+-- OSGL v1.6.1 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -31,11 +31,11 @@ end
 
 function estimateOutput(width: number, height: number)
     local bufferLength = width * height * 12
-    
+
     local headerLength = 84
     local widthLength = string.len(tostring(width))
     local heightLength = string.len(tostring(height))
-    
+
     return headerLength + widthLength + heightLength + bufferLength + (width * height * 4)
 end
 
@@ -50,7 +50,7 @@ return {
 
         _G.osglTools.imageEditorRunning = true
         pluginButton.Icon = "rbxassetid://73679864301651"
-        
+
         local totalTime = 0
         local selectedParents = Selection:Get()
         local selectedItems = {}
@@ -58,7 +58,7 @@ return {
 
         if #selectedParents == 0 then
             table.insert(selectedParents, workspace)
-        end 
+        end
 
         -- Prompt the user for a PNG
         local files: {File} = StudioService:PromptImportFiles({ "png" })
@@ -99,15 +99,15 @@ return {
 
             if not Success then
                 notif.invoke(`Failed to convert Texture '{fileName}'! Could not convert PNG.`)
-                continue                
+                continue
             end
 
             totalTime += endTime
 
             local output = Instance.new("ModuleScript")
             output.Name = fileName
-            output.Source = `return \{\n\tversion = "1.6b",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("{bfr}")\n}`
-       
+            output.Source = `return \{\n\tversion = "1.6.1",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("{bfr}")\n}`
+
             for _, parent in selectedParents do
                 local newOutput = output:Clone()
                 newOutput.Parent = parent
@@ -129,7 +129,7 @@ return {
         end
 
         Selection:Set(selectedItems)
-        
+
         _G.osglTools.imageEditorRunning = false
         pluginButton.Icon = "rbxassetid://71989091852609"
     end

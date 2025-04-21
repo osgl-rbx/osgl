@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.6b - Open-Source Graphical Library
+-- OSGL v1.6.1 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -205,17 +205,16 @@ function Texture.drawChecked<T>(
 	if rotation == 0 then
 		local drawWidth = math.min(texture.width, object.width - textureX)
         local drawHeight = math.min(texture.height, object.height - textureY)
-        
+
         if drawWidth <= 0 or drawHeight <= 0 then return end
 
-        local targetBuffer = object.buffer 
+        local targetBuffer = object.buffer
         local sourceBuffer = texture.buffer
-        local targetSize = object.width * 4 
         local targetSize = texture.width * 4
-        
+
         local targetOffset = (textureY * object.width + textureX) * 4
         local sourceOffset = 0
-        
+
         for y = 0, drawHeight - 1 do
             buffer.copy(
                 targetBuffer, targetOffset + y * targetSize,

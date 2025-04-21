@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.6b - Open-Source Graphical Library
+-- OSGL v1.6.1 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -50,7 +50,7 @@ return function<T>(object: types.DrawableObject<T>, xPos: number, yPos: number, 
 
 		for x = 0, w  do
 			x += xPos
-			
+
 			if x >= sizeX then
 				continue
 			end
@@ -86,7 +86,7 @@ return function<T>(object: types.DrawableObject<T>, xPos: number, yPos: number, 
 	local x1, y1 = rotatePoint(xPos + width, yPos)
 	local x2, y2 = rotatePoint(xPos + width, yPos + height)
 	local x3, y3 = rotatePoint(xPos, yPos + height)
-    
+
 
 	fillPolygon(object, {
 		{ x0, y0 },

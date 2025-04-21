@@ -20,7 +20,7 @@ local unwrappedOld: OSGL.Window = oldWindow:Unwrap()
 unwrappedOld:Clear(color.RED)
 
 local fakeTexture = {
-    version = "1.6b",
+    version = "1.6.1",
     width = 50,
     height = 50,
     pixels = unwrappedOld.buffer
