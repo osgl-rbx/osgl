@@ -26,7 +26,7 @@ local HEIGHT = 500
 local myWindow = Window.from(Texture, WIDTH, HEIGHT)
 
 if not myWindow.isOk then
-	warn("Encountered Error,", myWindow:UnwrapErr())
+    warn("Encountered Error,", myWindow:UnwrapErr())
     return
 end
 

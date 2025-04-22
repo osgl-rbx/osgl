@@ -31,22 +31,22 @@ return function<T>(
     local endIndex = (y2 * sizeX + x2) * 4
 
     local bufferLength = endIndex - startIndex
-	local currentSize = 4
-	local numCopies = math.ceil(math.log(bufferLength / 4, 2))
+    local currentSize = 4
+    local numCopies = math.ceil(math.log(bufferLength / 4, 2))
 
-	buffer.writeu32(self.buffer, startIndex, color)
+    buffer.writeu32(self.buffer, startIndex, color)
 
-	for _ = 1, numCopies do
-		local copySize = math.min(currentSize, bufferLength - currentSize)
+    for _ = 1, numCopies do
+        local copySize = math.min(currentSize, bufferLength - currentSize)
 
-		buffer.copy(
-			self.buffer,
-			startIndex + currentSize,
-			self.buffer,
-			startIndex,
-			copySize
-		)
+        buffer.copy(
+            self.buffer,
+            startIndex + currentSize,
+            self.buffer,
+            startIndex,
+            copySize
+        )
 
-		currentSize += copySize
-	end
+        currentSize += copySize
+    end
 end

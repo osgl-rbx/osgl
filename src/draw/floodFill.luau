@@ -36,37 +36,37 @@ function offsetIndex(i, x, y, sizeX)
 end
 
 return function<T>(object: types.DrawableObject<T>, x: number, y: number, color: types.Color)
-	x = x or 0
-	y = y or 0
+    x = x or 0
+    y = y or 0
 
-	local sizeX, sizeY = object.sizeX, object.sizeY
-	local originalColor = object:ReadPixelUnchecked(x, y)
+    local sizeX, sizeY = object.sizeX, object.sizeY
+    local originalColor = object:ReadPixelUnchecked(x, y)
 
-	-- Creates more than enough memory, better optimization.
-	local checked = table.create(sizeX * sizeY, false)
-	local stack = table.create(sizeX * sizeY, 0)
-	stack[1] = getIndex(x, y, sizeX)
+    -- Creates more than enough memory, better optimization.
+    local checked = table.create(sizeX * sizeY, false)
+    local stack = table.create(sizeX * sizeY, 0)
+    stack[1] = getIndex(x, y, sizeX)
 
-	local MAX_INDEX = getIndex(sizeX - 1, sizeY - 1, sizeX)
+    local MAX_INDEX = getIndex(sizeX - 1, sizeY - 1, sizeX)
     local bfr = object.buffer
-	while #stack > 0 do
-		local currentIndex = stack[#stack]
-		stack[#stack] = nil
+    while #stack > 0 do
+        local currentIndex = stack[#stack]
+        stack[#stack] = nil
 
-		if checked[currentIndex] or currentIndex < 0 or currentIndex > MAX_INDEX then
-			continue
-		end
-		checked[currentIndex] = true
+        if checked[currentIndex] or currentIndex < 0 or currentIndex > MAX_INDEX then
+            continue
+        end
+        checked[currentIndex] = true
 
-		if buffer.readu32(bfr, currentIndex) ~= originalColor then
-			continue
-		end
+        if buffer.readu32(bfr, currentIndex) ~= originalColor then
+            continue
+        end
 
         buffer.writeu32(bfr, currentIndex, color)
 
-		stack[#stack + 1] = offsetIndex(currentIndex, 1, 0, sizeX)
-		stack[#stack + 1] = offsetIndex(currentIndex, -1, 0, sizeX)
-		stack[#stack + 1] = offsetIndex(currentIndex, 0, 1, sizeX)
-		stack[#stack + 1] = offsetIndex(currentIndex, 0, -1, sizeX)
-	end
+        stack[#stack + 1] = offsetIndex(currentIndex, 1, 0, sizeX)
+        stack[#stack + 1] = offsetIndex(currentIndex, -1, 0, sizeX)
+        stack[#stack + 1] = offsetIndex(currentIndex, 0, 1, sizeX)
+        stack[#stack + 1] = offsetIndex(currentIndex, 0, -1, sizeX)
+    end
 end

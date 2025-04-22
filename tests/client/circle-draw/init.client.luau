@@ -23,7 +23,7 @@ local HEIGHT = 1024
 local myWindow = Window.from(Image, WIDTH, HEIGHT)
 
 if not myWindow.isOk then
-	warn("Encountered Error,", myWindow:UnwrapErr())
+    warn("Encountered Error,", myWindow:UnwrapErr())
     return
 end
 

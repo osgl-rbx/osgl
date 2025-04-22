@@ -24,8 +24,8 @@ local textureCopy = script.RobloxLogo2
 local myWindow = Window.from(Decal, WIDTH, HEIGHT)
 
 if not myWindow.isOk then
-	warn("Encountered Error,", myWindow:UnwrapErr())
-	return
+    warn("Encountered Error,", myWindow:UnwrapErr())
+    return
 end
 
 local ITERATIONS = 256
@@ -34,10 +34,10 @@ local unwrappedWindow: OSGL.Window = myWindow:Unwrap()
 
 local uncheckedAvg = 0
 for _ = 1, ITERATIONS do
-	local start = os.clock()
-	local txt = Texture.fromUnchecked(require(textureObject))
-	Texture.drawUnchecked(unwrappedWindow, txt, 0, 0)
-	unwrappedWindow:Render()
+    local start = os.clock()
+    local txt = Texture.fromUnchecked(require(textureObject))
+    Texture.drawUnchecked(unwrappedWindow, txt, 0, 0)
+    unwrappedWindow:Render()
     uncheckedAvg += os.clock() - start
 end
 

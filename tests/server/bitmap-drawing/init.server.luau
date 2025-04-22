@@ -22,27 +22,27 @@ local HEIGHT = 622
 local myWindow = Window.from(Texture, WIDTH, HEIGHT)
 
 if not myWindow.isOk then
-	warn("Encountered Error,", myWindow:UnwrapErr())
-	return
+    warn("Encountered Error,", myWindow:UnwrapErr())
+    return
 end
 
 local unwrappedWindow: OSGL.Window = myWindow:Unwrap()
 
 local newBitmap = Bitmap.fromChecked(script.Bitmap)
 if not newBitmap.isOk then
-	warn("Encountered Error,", newBitmap:UnwrapErr())
-	return
+    warn("Encountered Error,", newBitmap:UnwrapErr())
+    return
 end
 
 local unwrappedBitmap: OSGL.Bitmap = newBitmap:Unwrap()
 for X = 0, 621 do
-	for Y = 0, 621 do
-		local R = unwrappedBitmap:Read(X, Y)
-		if R ~= 0 then
-			local col = color.newRGB(R, 0, 0)
-			unwrappedWindow:Pixel(X, Y, col)
-		end
-	end
+    for Y = 0, 621 do
+        local R = unwrappedBitmap:Read(X, Y)
+        if R ~= 0 then
+            local col = color.newRGB(R, 0, 0)
+            unwrappedWindow:Pixel(X, Y, col)
+        end
+    end
 end
 
 unwrappedWindow:Render()

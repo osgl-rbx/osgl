@@ -11,7 +11,7 @@ local oldWindow = Window.from(workspace.SpawnLocation.Decal, 50, 50)
 local myWindow = Window.from(workspace.SpawnLocation.Decal, WIDTH, HEIGHT)
 
 if not myWindow.isOk then
-	warn("Encountered Error,", myWindow:UnwrapErr())
+    warn("Encountered Error,", myWindow:UnwrapErr())
     return
 end
 

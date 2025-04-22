@@ -36,62 +36,62 @@ local DrawBaseImpl = {}
 <em>Resizes the </em><code>DrawableObject</code><em> to the given width and height.</em>
   ]=]
 function DrawBaseImpl.Resize<T>(
-	self: types.DrawableObject<T>,
-	width: number?,
-	height: number?
+    self: types.DrawableObject<T>,
+    width: number?,
+    height: number?
 ): Result<nil, oEnum.DrawableObjectError>
-	local currentWidth, currentHeight = self.width, self.height
+    local currentWidth, currentHeight = self.width, self.height
 
-	width = width or currentWidth
-	height = height or currentHeight
+    width = width or currentWidth
+    height = height or currentHeight
 
-	if width == currentHeight and height == currentHeight then
-		return result.new(true, nil)
-	end
+    if width == currentHeight and height == currentHeight then
+        return result.new(true, nil)
+    end
 
-	if width > 1024 or height > 1024 or width < 0 or height < 0 then
-		return result.new(false, oEnum.DrawableObjectError.ResizeOutOfBounds)
-	end
+    if width > 1024 or height > 1024 or width < 0 or height < 0 then
+        return result.new(false, oEnum.DrawableObjectError.ResizeOutOfBounds)
+    end
 
-	local copy_size
-	local bfrSize = width * height * 4
-	local currentSize = buffer.len(self.buffer)
-	if bfrSize < currentSize then
-		copy_size = bfrSize
-	else
-		copy_size = currentSize
-	end
+    local copy_size
+    local bfrSize = width * height * 4
+    local currentSize = buffer.len(self.buffer)
+    if bfrSize < currentSize then
+        copy_size = bfrSize
+    else
+        copy_size = currentSize
+    end
 
-	local resizedBuffer = buffer.create(bfrSize)
-	buffer.copy(resizedBuffer, 0, self.buffer, 0, copy_size)
+    local resizedBuffer = buffer.create(bfrSize)
+    buffer.copy(resizedBuffer, 0, self.buffer, 0, copy_size)
 
-	self.buffer = resizedBuffer
+    self.buffer = resizedBuffer
 
-	local size = Vector2.new(width, height)
-	self.size = size
-	self.width = width
-	self.height = height
+    local size = Vector2.new(width, height)
+    self.size = size
+    self.width = width
+    self.height = height
 
-	-- Is a window
-	if self.editableImage then
-		local editableImage = AssetService:CreateEditableImage({ Size = size })
-		if not editableImage then
-			return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
-		end
+    -- Is a window
+    if self.editableImage then
+        local editableImage = AssetService:CreateEditableImage({ Size = size })
+        if not editableImage then
+            return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
+        end
 
-		self.editableImage = editableImage
-		local content = Content.fromObject(editableImage)
-		for _, v in self.surfaces do
-			local prop = util.getRendererProp(v)
-			if prop == "" then
-				continue
-			end
+        self.editableImage = editableImage
+        local content = Content.fromObject(editableImage)
+        for _, v in self.surfaces do
+            local prop = util.getRendererProp(v)
+            if prop == "" then
+                continue
+            end
 
-			v[prop] = content
-		end
-	end
+            v[prop] = content
+        end
+    end
 
-	return result.new(true, nil)
+    return result.new(true, nil)
 end
 
 --[=[
@@ -99,7 +99,7 @@ end
 <em>Serializes the </em><code>DrawableObject</code><em>.</em>
   ]=]
 function DrawBaseImpl.Serialize<T>(self: types.DrawableObject<T>): (buffer, number, number)
-	return self.buffer, self.width, self.height
+    return self.buffer, self.width, self.height
 end
 
 --[=[
@@ -107,24 +107,24 @@ end
 <em>Deserializes a serialized object onto the </em><code>DrawableObject</code><em>.</em>
   ]=]
 function DrawBaseImpl.Deserialize<T>(
-	self: types.DrawableObject<T>,
-	buff: buffer,
-	width: number,
-	height: number
+    self: types.DrawableObject<T>,
+    buff: buffer,
+    width: number,
+    height: number
 ): Result<nil, oEnum.DrawableObjectError>
 
-	local otherBuffLen = buffer.len(buff)
-	if (otherBuffLen ~= width * height * 4) then
-		return result.new(false, oEnum.DrawableObjectError.BadBufferSize)
-	end
+    local otherBuffLen = buffer.len(buff)
+    if (otherBuffLen ~= width * height * 4) then
+        return result.new(false, oEnum.DrawableObjectError.BadBufferSize)
+    end
 
-	if otherBuffLen > buffer.len(self.buffer) then
-		DrawBaseImpl.Resize(self, math.max(width, self.width), math.max(height, self.height))
-	end
+    if otherBuffLen > buffer.len(self.buffer) then
+        DrawBaseImpl.Resize(self, math.max(width, self.width), math.max(height, self.height))
+    end
 
-	buffer.copy(self.buffer, 0, buff)
+    buffer.copy(self.buffer, 0, buff)
 
-	return result.new(true, nil)
+    return result.new(true, nil)
 end
 
 --[=[
@@ -133,15 +133,15 @@ end
 <em>Returns the color of the given pixel, if in bound.</em>
   ]=]
 function DrawBaseImpl.ReadPixelChecked<T>(
-	self: types.DrawableObject<T>,
-	x: number,
-	y: number
+    self: types.DrawableObject<T>,
+    x: number,
+    y: number
 ): Result<types.Color, oEnum.DrawableObjectError>
-	if x >= 0 and y >= 0 and x < self.width and y < self.height then
-		return result.new(true, buffer.readu32(self.buffer, (y * self.width + x) * 4))
-	end
+    if x >= 0 and y >= 0 and x < self.width and y < self.height then
+        return result.new(true, buffer.readu32(self.buffer, (y * self.width + x) * 4))
+    end
 
-	return result.new(false, oEnum.DrawableObjectError.OutOfBounds)
+    return result.new(false, oEnum.DrawableObjectError.OutOfBounds)
 end
 
 --[=[
@@ -150,33 +150,33 @@ end
 <em>Returns the color of the given pixel</em>
   ]=]
 function DrawBaseImpl.ReadPixelUnchecked<T>(self: types.DrawableObject<T>, x: number, y: number): types.Color
-	return buffer.readu32(self.buffer, (y * self.width + x) * 4)
+    return buffer.readu32(self.buffer, (y * self.width + x) * 4)
 end
 
 local function doTint(self, tint, factor, x, y, finalX, finalY)
-	local tintR = color.r(tint)
-	local tintG = color.g(tint)
-	local tintB = color.b(tint)
-	local tintA = color.a(tint)
+    local tintR = color.r(tint)
+    local tintG = color.g(tint)
+    local tintB = color.b(tint)
+    local tintA = color.a(tint)
 
-	local sizeX = self.width
-	local bfr = self.buffer
-	for x = x, finalX do
-		for y = y, finalY do
-			local pixelColor = buffer.readu32(bfr, (y * sizeX + x) * 4)
+    local sizeX = self.width
+    local bfr = self.buffer
+    for x = x, finalX do
+        for y = y, finalY do
+            local pixelColor = buffer.readu32(bfr, (y * sizeX + x) * 4)
 
-			buffer.writeu32(
-				bfr,
-				(y * sizeX + x) * 4,
-				color.new(
-					math.lerp(color.r(pixelColor), tintR, factor),
-					math.lerp(color.g(pixelColor), tintG, factor),
-					math.lerp(color.b(pixelColor), tintB, factor),
-					math.lerp(color.a(pixelColor), tintA, factor)
-				)
-			)
-		end
-	end
+            buffer.writeu32(
+                bfr,
+                (y * sizeX + x) * 4,
+                color.new(
+                    math.lerp(color.r(pixelColor), tintR, factor),
+                    math.lerp(color.g(pixelColor), tintG, factor),
+                    math.lerp(color.b(pixelColor), tintB, factor),
+                    math.lerp(color.a(pixelColor), tintA, factor)
+                )
+            )
+        end
+    end
 end
 
 --[=[
@@ -185,24 +185,24 @@ end
 <em>Tints a region of pixels.</em>
   ]=]
 function DrawBaseImpl.TintRegionChecked<T>(
-	self: types.DrawableObject<T>,
-	tint: types.Color,
-	factor: number,
-	x: number,
-	y: number,
-	width: number,
-	height: number
+    self: types.DrawableObject<T>,
+    tint: types.Color,
+    factor: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number
 )
-	local finalX = x + width
-	local finalY = y + height
+    local finalX = x + width
+    local finalY = y + height
 
-	if x < 0 or x > width or y < 0 or y > height or finalX < 0 or finalX > width or finalY < 0 or finalY > height then
-		return result.new(false, oEnum.DrawableObjectError.OutOfBounds)
-	end
+    if x < 0 or x > width or y < 0 or y > height or finalX < 0 or finalX > width or finalY < 0 or finalY > height then
+        return result.new(false, oEnum.DrawableObjectError.OutOfBounds)
+    end
 
-	doTint(self, tint, factor, x, y, finalX, finalY)
+    doTint(self, tint, factor, x, y, finalX, finalY)
 
-	return result.new(true, nil)
+    return result.new(true, nil)
 end
 
 --[=[
@@ -211,15 +211,15 @@ end
 <em>Tints a region of pixels.</em>
   ]=]
 function DrawBaseImpl.TintRegionUnchecked<T>(
-	self: types.DrawableObject<T>,
-	tint: types.Color,
-	factor: number,
-	x: number,
-	y: number,
-	width: number,
-	height: number
+    self: types.DrawableObject<T>,
+    tint: types.Color,
+    factor: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number
 )
-	return doTint(self, tint, factor, x, y, x + width, x + height)
+    return doTint(self, tint, factor, x, y, x + width, x + height)
 end
 
 --[=[
@@ -227,7 +227,7 @@ end
 <em>Tints the entire object.</em>
   ]=]
 function DrawBaseImpl.Tint<T>(self: types.DrawableObject<T>, tint: number, factor: number)
-	doTint(self, tint, factor, self.width - 1, self.height - 1)
+    doTint(self, tint, factor, self.width - 1, self.height - 1)
 end
 
 --[=[
@@ -284,29 +284,29 @@ end
 export type Base = typeof(DrawBaseImpl)
 
 return {
-	new = function(): Base
-		return {
-			Resize = DrawBaseImpl.Resize,
-			Serialize = DrawBaseImpl.Serialize,
-			Deserialize = DrawBaseImpl.Deserialize,
-			ReadPixelChecked = DrawBaseImpl.ReadPixelChecked,
-			ReadPixelUnchecked = DrawBaseImpl.ReadPixelUnchecked,
-			TintRegionChecked = DrawBaseImpl.TintRegionChecked,
-			TintRegionUnchecked = DrawBaseImpl.TintRegionUnchecked,
-			Tint = DrawBaseImpl.Tint,
-			Resample = DrawBaseImpl.Resample,
+    new = function(): Base
+        return {
+            Resize = DrawBaseImpl.Resize,
+            Serialize = DrawBaseImpl.Serialize,
+            Deserialize = DrawBaseImpl.Deserialize,
+            ReadPixelChecked = DrawBaseImpl.ReadPixelChecked,
+            ReadPixelUnchecked = DrawBaseImpl.ReadPixelUnchecked,
+            TintRegionChecked = DrawBaseImpl.TintRegionChecked,
+            TintRegionUnchecked = DrawBaseImpl.TintRegionUnchecked,
+            Tint = DrawBaseImpl.Tint,
+            Resample = DrawBaseImpl.Resample,
 
-			Pixel = draw.Pixel,
-			PixelIndex = draw.PixelIndex,
-			Line = draw.Line,
-			Rectangle = draw.Rectangle,
-			Polygon = draw.Polygon,
-			Triangle = draw.Triangle,
-			Circle = draw.Circle,
-			Buffer = draw.Buffer,
-			Clear = draw.Clear,
-			Chunk = draw.Chunk,
-			FloodFill = draw.FloodFill,
-		}
-	end
+            Pixel = draw.Pixel,
+            PixelIndex = draw.PixelIndex,
+            Line = draw.Line,
+            Rectangle = draw.Rectangle,
+            Polygon = draw.Polygon,
+            Triangle = draw.Triangle,
+            Circle = draw.Circle,
+            Buffer = draw.Buffer,
+            Clear = draw.Clear,
+            Chunk = draw.Chunk,
+            FloodFill = draw.FloodFill,
+        }
+    end
 }

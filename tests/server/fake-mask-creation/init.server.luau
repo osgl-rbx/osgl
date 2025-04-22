@@ -6,16 +6,16 @@ local WIDTH = 50
 local HEIGHT = 50
 
 local fakeBitmap = {
-	version = "1.6.1",
-	pixels = buffer.fromstring(string.rep("\255\127", WIDTH * HEIGHT)),
-	width = WIDTH,
-	height = HEIGHT,
+    version = "1.6.1",
+    pixels = buffer.fromstring(string.rep("\255\127", WIDTH * HEIGHT)),
+    width = WIDTH,
+    height = HEIGHT,
 }
 
 local newBitmap = Bitmap.fromChecked(fakeBitmap)
 if not newBitmap.isOk then
-	warn("Encountered Error,", newBitmap:UnwrapErr())
-	return
+    warn("Encountered Error,", newBitmap:UnwrapErr())
+    return
 end
 
 local unwrappedBitmap: OSGL.Bitmap = newBitmap:Unwrap()

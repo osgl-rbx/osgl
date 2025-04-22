@@ -23,8 +23,8 @@ local HEIGHT = loadedTexture.height
 local myWindow = Window.from(Decal, WIDTH, HEIGHT)
 
 if not myWindow.isOk then
-	warn("Encountered Error,", myWindow:UnwrapErr())
-	return
+    warn("Encountered Error,", myWindow:UnwrapErr())
+    return
 end
 
 local unwrappedWindow: OSGL.Window = myWindow:Unwrap()

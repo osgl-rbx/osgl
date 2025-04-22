@@ -244,7 +244,7 @@ end
 <em>Returns all 4 channels of a </em><code>Color</code><em>.</em>
   ]=]
 function color.read(rgbaColor: types.Color): (number, number, number, number)
-	return
+    return
         color.r(rgbaColor),
         color.g(rgbaColor),
         color.b(rgbaColor),

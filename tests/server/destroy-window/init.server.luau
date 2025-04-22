@@ -21,16 +21,16 @@ local HEIGHT = 100
 local myWindow = Window.from(Texture, WIDTH, HEIGHT)
 
 if not myWindow.isOk then
-	warn("Encountered Error,", myWindow:UnwrapErr())
-	return
+    warn("Encountered Error,", myWindow:UnwrapErr())
+    return
 end
 
 local unwrappedWindow: OSGL.Window = myWindow:Unwrap()
 print("Test started")
 
 for i = 1, 5 do 
-	print(`Window is destroyed in {5 - i} seconds, watch memory usage`)
-	task.wait(1)
+    print(`Window is destroyed in {5 - i} seconds, watch memory usage`)
+    task.wait(1)
 end
 
 print("Window destroyed")

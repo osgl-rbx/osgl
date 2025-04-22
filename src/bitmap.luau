@@ -22,15 +22,15 @@ local util = require(OSGL.util)
 type Result<T, E> = result.Result<T, E>
 
 local function checkUnloadedBitmap(unloadedBitmap: types.RawTexture): Result<types.BaseUnloadedTexture, oEnum.TextureError>
-	if typeof(unloadedBitmap) == "Instance" and unloadedBitmap:IsA("ModuleScript") then
-		unloadedBitmap = require(unloadedBitmap)
-	end
+    if typeof(unloadedBitmap) == "Instance" and unloadedBitmap:IsA("ModuleScript") then
+        unloadedBitmap = require(unloadedBitmap)
+    end
 
-	if type(unloadedBitmap) ~= "table" or not table.find(util.VALID_TEXTURE_VERSIONS, unloadedBitmap.version) then
-		return result.new(false, oEnum.TextureError.BadInput)
-	end
+    if type(unloadedBitmap) ~= "table" or not table.find(util.VALID_TEXTURE_VERSIONS, unloadedBitmap.version) then
+        return result.new(false, oEnum.TextureError.BadInput)
+    end
 
-	return result.new(true, unloadedBitmap)
+    return result.new(true, unloadedBitmap)
 end
 
 local Bitmap = {}
@@ -61,11 +61,11 @@ end
 function Bitmap.fromChecked(rawBitmap: types.RawTexture): Result<types.Bitmap, oEnum.TextureError>
     local raw = checkUnloadedBitmap(rawBitmap)
 
-	if not raw.isOk then
-		return raw
-	end
+    if not raw.isOk then
+        return raw
+    end
 
-	return result.new(true, Bitmap.fromUnchecked(raw:Unwrap()))
+    return result.new(true, Bitmap.fromUnchecked(raw:Unwrap()))
 end
 
 --[=[
