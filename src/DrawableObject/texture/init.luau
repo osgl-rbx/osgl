@@ -209,7 +209,7 @@ function Texture.drawChecked<T>(
 	if rotation == 0 then
 		local drawWidth = math.min(texture.width, object.width - textureX)
 		local drawHeight = math.min(texture.height, object.height - textureY)
-
+		
 		if drawWidth <= 0 or drawHeight <= 0 then
 			return
 		end
@@ -250,22 +250,27 @@ function Texture.drawUnchecked<T>(
 	rotation = rotation or 0
 
 	if rotation == 0 then
-		local y2 = 0
-		local width = texture.width
-		local height = texture.height
-		local bfr = texture.buffer
+		local drawWidth = math.min(texture.width, object.width - textureX)
+		local drawHeight = math.min(texture.height, object.height - textureY)
 
-		for y = textureY, textureY + width - 1 do
-			y2 = y - textureY
+		local targetBuffer = object.buffer
+		local sourceBuffer = texture.buffer
+		local targetSize = texture.width * 4
 
-			local x2 = 0
-			for x = textureX, textureX + height - 1 do
-				x2 = x - textureX
-				pixel(object, x, y, buffer.readu32(bfr, (y2 * height + x2) * 4))
-			end
+		local targetOffset = (textureY * object.width + textureX) * 4
+		local sourceOffset = 0
+
+		for y = 0, drawHeight - 1 do
+			buffer.copy(
+				targetBuffer,
+				targetOffset + y * targetSize,
+				sourceBuffer,
+				sourceOffset + y * targetSize,
+				drawWidth * 4
+			)
 		end
 	else
-		drawRotatedUnchecked(object, texture, textureX, textureY, rotation)
+		drawRotated(object, texture, textureX, textureY, rotation)
 	end
 end
 
