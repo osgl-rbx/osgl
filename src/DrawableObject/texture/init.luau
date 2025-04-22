@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.6.1 - Open-Source Graphical Library
+-- OSGL v1.6.2 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -297,6 +297,11 @@ function Texture.fromAssetId(assetId: number): Result<types.OSGLTexture, oEnum.D
 	return result.new(true, t)
 end
 
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Checked</strong>
+<em>Loads a CanvasDraw </em><code>SaveObject</code><em> as an OSGL </em><code>Texture</code><em>.</em>
+  ]=]
 function Texture.fromCanvasDrawSaveObject(
 	saveObject: Instance,
 	slowLoad: boolean?

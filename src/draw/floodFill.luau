@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.6.1 - Open-Source-Graphical-Library
+-- OSGL v1.6.2 - Open-Source-Graphical-Library
 -- Copyright © 2023-2025 OSGL (@saaawdust)
 --
 -- This software is provided ‘as-is’, without any express or implied warranty.
