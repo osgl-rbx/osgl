@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/osgl/static/css/main.50ff1ed0.css",
-    "main.js": "/osgl/static/js/main.c224c0a2.js",
+    "main.js": "/osgl/static/js/main.8fbb9a19.js",
     "static/css/578.f4f0e8f0.chunk.css": "/osgl/static/css/578.f4f0e8f0.chunk.css",
     "static/js/578.4f436b33.chunk.js": "/osgl/static/js/578.4f436b33.chunk.js",
     "static/css/210.f4f0e8f0.chunk.css": "/osgl/static/css/210.f4f0e8f0.chunk.css",
@@ -45,7 +45,7 @@
     "static/css/662.ad281e85.chunk.css": "/osgl/static/css/662.ad281e85.chunk.css",
     "static/js/662.b4837146.chunk.js": "/osgl/static/js/662.b4837146.chunk.js",
     "static/css/43.ad281e85.chunk.css": "/osgl/static/css/43.ad281e85.chunk.css",
-    "static/js/43.32da6143.chunk.js": "/osgl/static/js/43.32da6143.chunk.js",
+    "static/js/43.7815e185.chunk.js": "/osgl/static/js/43.7815e185.chunk.js",
     "static/css/752.ad281e85.chunk.css": "/osgl/static/css/752.ad281e85.chunk.css",
     "static/js/752.5ee54a47.chunk.js": "/osgl/static/js/752.5ee54a47.chunk.js",
     "static/css/991.ad281e85.chunk.css": "/osgl/static/css/991.ad281e85.chunk.css",
@@ -54,7 +54,7 @@
     "static/js/239.aac38023.chunk.js": "/osgl/static/js/239.aac38023.chunk.js",
     "index.html": "/osgl/index.html",
     "main.50ff1ed0.css.map": "/osgl/static/css/main.50ff1ed0.css.map",
-    "main.c224c0a2.js.map": "/osgl/static/js/main.c224c0a2.js.map",
+    "main.8fbb9a19.js.map": "/osgl/static/js/main.8fbb9a19.js.map",
     "578.f4f0e8f0.chunk.css.map": "/osgl/static/css/578.f4f0e8f0.chunk.css.map",
     "578.4f436b33.chunk.js.map": "/osgl/static/js/578.4f436b33.chunk.js.map",
     "210.f4f0e8f0.chunk.css.map": "/osgl/static/css/210.f4f0e8f0.chunk.css.map",
@@ -98,7 +98,7 @@
     "662.ad281e85.chunk.css.map": "/osgl/static/css/662.ad281e85.chunk.css.map",
     "662.b4837146.chunk.js.map": "/osgl/static/js/662.b4837146.chunk.js.map",
     "43.ad281e85.chunk.css.map": "/osgl/static/css/43.ad281e85.chunk.css.map",
-    "43.32da6143.chunk.js.map": "/osgl/static/js/43.32da6143.chunk.js.map",
+    "43.7815e185.chunk.js.map": "/osgl/static/js/43.7815e185.chunk.js.map",
     "752.ad281e85.chunk.css.map": "/osgl/static/css/752.ad281e85.chunk.css.map",
     "752.5ee54a47.chunk.js.map": "/osgl/static/js/752.5ee54a47.chunk.js.map",
     "991.ad281e85.chunk.css.map": "/osgl/static/css/991.ad281e85.chunk.css.map",
@@ -108,6 +108,6 @@
   },
   "entrypoints": [
     "static/css/main.50ff1ed0.css",
-    "static/js/main.c224c0a2.js"
+    "static/js/main.8fbb9a19.js"
   ]
 }
