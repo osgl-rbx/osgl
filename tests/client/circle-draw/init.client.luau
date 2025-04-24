@@ -28,6 +28,7 @@ if not myWindow.isOk then
 end
 
 local unwrappedWindow: OSGL.Window = myWindow:Unwrap()
+
 while task.wait() do
     local inWindow, X, Y = unwrappedWindow:GetRelativeMousePosition(Image)
     if not inWindow or not UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then

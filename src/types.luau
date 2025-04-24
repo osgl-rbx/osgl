@@ -1,5 +1,5 @@
 ------------------------------------------------------------
--- OSGL v1.6.15 - Open-Source Graphical Library
+-- OSGL v1.6.2 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -37,22 +37,22 @@ export type Window = DrawableObject<Window> & {
     Destroy: (self: Window) -> (),
 }
 
-export type DrawableObject<T> = DrawingContext<DrawableObject<T>> & {
+export type DrawableObject<T> = DrawingContext<T> & {
     buffer: buffer,
 
     width: number,
     height: number,
     size: Vector2,
 
-    Resize: (self: DrawableObject<T>, width: number, height: number) -> Result<nil, oEnum.DrawableObjectError>,
-    Serialize: (self: DrawableObject<T>) -> (buffer, number, number),
-    Deserialize: (self: DrawableObject<T>, buffer: buffer, width: number, height: number) -> Result<nil, oEnum.DrawableObjectError>,
-    ReadPixelChecked: (self: DrawableObject<T>, X: number, Y: number) -> Result<Color, oEnum.DrawableObjectError>,
-    ReadPixelUnchecked: (self: DrawableObject<T>, X: number, Y: number) -> Color,
-    TintRegionChecked: (self: DrawableObject<T>, tint: Color, factor: number, X: number, Y: number, width: number, height: number) -> Result<nil, oEnum.DrawableObjectError>,
-    TintRegionUnchecked: (self: DrawableObject<T>, tint: Color, factor: number, X: number, Y: number, width: number, height: number) -> nil,
-    Tint: (self: DrawableObject<T>, tint: Color, factor: number) -> nil,
-    Resample: (self: DrawableObject<T>, scale: number?) -> nil,
+    Resize: (self: T, width: number, height: number) -> Result<nil, oEnum.DrawableObjectError>,
+    Serialize: (self: T) -> (buffer, number, number),
+    Deserialize: (self: T, buffer: buffer, width: number, height: number) -> Result<nil, oEnum.DrawableObjectError>,
+    ReadPixelChecked: (self: T, X: number, Y: number) -> Result<Color, oEnum.DrawableObjectError>,
+    ReadPixelUnchecked: (self: T, X: number, Y: number) -> Color,
+    TintRegionChecked: (self: T, tint: Color, factor: number, X: number, Y: number, width: number, height: number) -> Result<nil, oEnum.DrawableObjectError>,
+    TintRegionUnchecked: (self: T, tint: Color, factor: number, X: number, Y: number, width: number, height: number) -> nil,
+    Tint: (self: T, tint: Color, factor: number) -> nil,
+    Resample: (self: T, scale: number?) -> nil,
 }
 
 export type DrawingContext<T> = {

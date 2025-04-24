@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.6.15 - Open-Source Graphical Library
+-- OSGL v1.6.2 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -34,6 +34,4 @@ return function<T>(self: types.DrawableObject<T>, Color: types.Color)
 
         current_size += copy_size
     end
-
-    return self
 end
