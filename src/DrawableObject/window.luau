@@ -127,7 +127,21 @@ function Window.fromAssetId(assetId: string): Result<types.Window, oEnum.WindowE
         return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
     end
 
-    return result.new(true, Window.new(editableImage, {}))
+    local size = editableImage.Size
+    local width, height = size.X, size.Y
+
+    local t = windowBase.new()
+
+    t.surfaces = {}
+    t.editableImage = editableImage
+    t.buffer = editableImage:ReadPixelsBuffer(Vector2.zero, size)
+    t.width = width
+    t.height = height
+    t.size = size
+    t.targetFPS = 60
+    t.lastRenderTime = os.clock()
+
+    return t
 end
 
 --[=[
@@ -144,7 +158,21 @@ function Window.fromBuffer(buffer: buffer, width: number, height: number): Resul
     local image = editableImage:Unwrap()
     image:WritePixelsBuffer(Vector2.zero, Vector2.new(width, height), buffer)
 
-    return result.new(true, Window.new(image, {}))
+    local size = editableImage.Size
+    local width, height = size.X, size.Y
+
+    local t = windowBase.new()
+
+    t.surfaces = {}
+    t.editableImage = editableImage
+    t.buffer = buffer
+    t.width = width
+    t.height = height
+    t.size = size
+    t.targetFPS = 60
+    t.lastRenderTime = os.clock()
+
+    return t
 end
 
 --[=[
