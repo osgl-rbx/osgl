@@ -116,7 +116,7 @@ end
 <strong>@OSGL/Window</strong>
 <em>Creates a new </em><code>Window</code><em> object given an asset id.</em>
   ]=]
-function Window.fromAssetId(assetId: string): Result<types.Window, oEnum.WindowError>
+function Window.fromAssetId(assetId: number): Result<types.Window, oEnum.WindowError>
     local texture = Content.fromAssetId(assetId)
 
     local success, editableImage = pcall(function()
@@ -141,7 +141,7 @@ function Window.fromAssetId(assetId: string): Result<types.Window, oEnum.WindowE
     t.targetFPS = 60
     t.lastRenderTime = os.clock()
 
-    return t
+    return result.new(true, t)
 end
 
 --[=[
