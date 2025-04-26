@@ -17,7 +17,6 @@
 ------------------------------------------------------------
 
 local OSGL = script.Parent.Parent
-local draw = OSGL.draw
 local types = require(OSGL.types)
 
 return function<T>(object: types.DrawableObject<T>, bfr: buffer, width: number, height: number, x: number, y: number)

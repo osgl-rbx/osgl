@@ -24,7 +24,7 @@ local osglScripts = osglTools.scripts
 local PNG = require(image.png)
 local notif = require(osglScripts.notif)
 
-local CHUNK_LIMIT = 200000 -- Equivilent to 200KB
+-- local CHUNK_LIMIT = 200000 -- Equivilent to 200KB
 
 function toHex(num: number): string
     return string.format("%02X", num)
@@ -78,10 +78,10 @@ return {
             local indexes = width * height
             local bfr = ""
 
-            if indexes > 12494 or estimateOutput(width, height) >= CHUNK_LIMIT then
-                notif.invoke(`Failed to convert Texture '{fileName}'! This Texture is too big. Try to keep Textures <b>under 111x111</b>.`)
-                continue
-            end
+            -- if indexes > 12494 or estimateOutput(width, height) >= CHUNK_LIMIT then
+            --     notif.invoke(`Failed to convert Texture '{fileName}'! This Texture is too big. Try to keep Textures <b>under 111x111</b>.`)
+            --     continue
+            -- end
 
             notif.invoke(`Converting '{fileName}'.`)
 
