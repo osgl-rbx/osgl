@@ -78,10 +78,10 @@ return {
             local indexes = width * height
             local bfr = ""
 
-            -- if indexes > 12494 or estimateOutput(width, height) >= CHUNK_LIMIT then
-            --     notif.invoke(`Failed to convert Texture '{fileName}'! This Texture is too big. Try to keep Textures <b>under 111x111</b>.`)
-            --     continue
-            -- end
+            if indexes > 12494 or estimateOutput(width, height) >= CHUNK_LIMIT then
+                notif.invoke(`Failed to convert Texture '{fileName}'! This Texture is too big. Try to keep Textures <b>under 111x111</b>.`)
+                continue
+            end
 
             notif.invoke(`Converting '{fileName}'.`)
 
@@ -108,11 +108,9 @@ return {
             local output = Instance.new("ModuleScript")
             output.Name = fileName
 
-            task.spawn(function()
-                ScriptEditorService:UpdateSourceAsync(output, function()
-                    return `return \{\n\tversion = "1.6.2",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("{bfr}")\n}`
-                end)
-            end)
+            -- ScriptEditorService:UpdateSourceAsync(output, function()
+            --     return `return \{\n\tversion = "1.6.2",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("{bfr}")\n}`
+            -- end)
 
             for _, parent in selectedParents do
                 local newOutput = output:Clone()
