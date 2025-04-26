@@ -15,6 +15,7 @@
 
 local StudioService = game:GetService("StudioService")
 local Selection = game:GetService("Selection")
+local ScriptEditorService = game:GetService("ScriptEditorService")
 
 local image = script.Parent
 local osglTools = image.Parent
@@ -77,10 +78,10 @@ return {
             local indexes = width * height
             local bfr = ""
 
-            if indexes > 12494 or estimateOutput(width, height) >= CHUNK_LIMIT then
-                notif.invoke(`Failed to convert Texture '{fileName}'! This Texture is too big. Try to keep Textures <b>under 111x111</b>.`)
-                continue
-            end
+            -- if indexes > 12494 or estimateOutput(width, height) >= CHUNK_LIMIT then
+            --     notif.invoke(`Failed to convert Texture '{fileName}'! This Texture is too big. Try to keep Textures <b>under 111x111</b>.`)
+            --     continue
+            -- end
 
             notif.invoke(`Converting '{fileName}'.`)
 
@@ -106,7 +107,12 @@ return {
 
             local output = Instance.new("ModuleScript")
             output.Name = fileName
-            output.Source = `return \{\n\tversion = "1.6.1",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("{bfr}")\n}`
+
+            task.spawn(function()
+                ScriptEditorService:UpdateSourceAsync(output, function()
+                    return `return \{\n\tversion = "1.6.2",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("{bfr}")\n}`
+                end)
+            end)
 
             for _, parent in selectedParents do
                 local newOutput = output:Clone()
