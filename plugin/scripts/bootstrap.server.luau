@@ -38,6 +38,7 @@ for _, tool: Instance in osglTools:GetChildren() do
         moduleData.Id = moduleData.Id or moduleData.Name
 
         local pluginButton = Toolbar:CreateButton(moduleData.Id, moduleData.Tooltip, moduleData.Icon, moduleData.Name)
+        pluginButton.ClickableWhenViewportHidden = true
         table.insert(connections, pluginButton.Click:Connect(function()
             moduleData.OnButtonClick(pluginButton)
         end))

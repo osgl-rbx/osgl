@@ -65,7 +65,7 @@ return {
         local files: {File} = StudioService:PromptImportFiles({ "png" })
         for _, file in files do
             local Success, pngData = pcall(function()
-                return PNG.new(file:GetBinaryContents())
+                return PNG.decode(buffer.fromstring(file:GetBinaryContents()))
             end)
 
             local fileName = string.match(file.Name, "(.+)%..+$") or file.Name
@@ -74,14 +74,9 @@ return {
                 continue
             end
 
-            local width, height = pngData.Width, pngData.Height
+            local width, height = pngData.width, pngData.height
             local indexes = width * height
             local bfr = ""
-
-            -- if indexes > 12494 or estimateOutput(width, height) >= CHUNK_LIMIT then
-            --     notif.invoke(`Failed to convert Texture '{fileName}'! This Texture is too big. Try to keep Textures <b>under 111x111</b>.`)
-            --     continue
-            -- end
 
             notif.invoke(`Converting '{fileName}'.`)
 
@@ -90,9 +85,9 @@ return {
             local startTime = os.clock()
             local endTime
             Success, _ = pcall(function()
-                for offset = 0, indexes do
-                    local Col, A = pngData:GetPixel((offset % width) + 1, (offset // width) + 1)
-                    bfr ..= `\\x{toHex(Col.R * 255)}\\x{toHex(Col.G * 255)}\\x{toHex(Col.B * 255)}\\x{toHex(A)}`
+                for offset = 0, indexes - 1 do
+                    local Col = pngData.readPixel((offset % width) + 1, (offset // width) + 1)
+                    bfr ..= `\\x{toHex(Col.r)}\\x{toHex(Col.g)}\\x{toHex(Col.b )}\\x{toHex(Col.a)}`
                 end
 
                 endTime = math.floor((os.clock() - startTime) * 100 + 0.5) / 100
@@ -108,9 +103,9 @@ return {
             local output = Instance.new("ModuleScript")
             output.Name = fileName
 
-            -- ScriptEditorService:UpdateSourceAsync(output, function()
-            --     return `return \{\n\tversion = "1.6.2",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("{bfr}")\n}`
-            -- end)
+            ScriptEditorService:UpdateSourceAsync(output, function()
+                return `return \{\n\tversion = "1.6.2",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("{bfr}")\n}`
+            end)
 
             for _, parent in selectedParents do
                 local newOutput = output:Clone()
