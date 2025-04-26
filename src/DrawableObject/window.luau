@@ -68,11 +68,6 @@ end
 <em>Creates a new </em><code>Window</code></em><em> object given a </em><code>EditableImage</code><em>.</em>
   ]=]
 function Window.new(editableImage: EditableImage, renderers: { types.Drawable }): types.Window
-    -- Check if the EditableImage can be used
-    local S, E = pcall(function()
-        return editableImage:WritePixelsBuffer(Vector2.zero, Vector2.new(1, 1), buffer.create(4))
-    end)
-
     local content = Content.fromObject(editableImage)
     for _, renderObject in ipairs(renderers) do
         local sourceProperty = Window.getRenderingProperty(renderObject)
@@ -132,7 +127,7 @@ function Window.fromAssetId(assetId: string): Result<types.Window, oEnum.WindowE
         return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
     end
 
-    return result.new(true, Window.new(editableImage))
+    return result.new(true, Window.new(editableImage, {}))
 end
 
 --[=[
