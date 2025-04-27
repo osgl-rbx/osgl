@@ -44,7 +44,7 @@ return function<T>(object: types.DrawableObject<T>, x: number, y: number, color:
 
 	-- Creates more than enough memory, better optimization.
 	local checked = table.create(sizeX * sizeY, false)
-	local stack = table.create(sizeX * sizeY, 0)
+	local stack = table.create(sizeX * sizeY, -1)
 	stack[1] = getIndex(x, y, sizeX)
 
 	local MAX_INDEX = getIndex(sizeX - 1, sizeY - 1, sizeX)
