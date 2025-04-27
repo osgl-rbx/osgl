@@ -14,8 +14,8 @@
 ------------------------------------------------------------
 
 local util = {}
-util.VALID_TEXTURE_VERSIONS = { "1.5b", "1.6b", "1.6.1" }
-util.VALID_FONT_VERSIONS = { "1.5b", "1.6b", "1.6.1" }
+util.VALID_TEXTURE_VERSIONS = { "1.5b", "1.6b", "1.6.1", "1.6.2" }
+util.VALID_FONT_VERSIONS = { "1.5b", "1.6b", "1.6.1", "1.6.2", }
 
 function util.getRendererProp(object: Instance): string
     if object:IsA("ImageLabel") or object:IsA("ImageButton") then

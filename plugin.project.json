@@ -11,6 +11,9 @@
                 "scripts": {
                     "$path": "plugin/scripts"
                 },
+                "config": {
+                    "$path": "plugin/config"
+                },
                 "OSGL": {
                     "$path": "src"
                 },

@@ -1,3 +1,6 @@
+--!native
+--!optimize 2
+
 ------------------------------------------------------------
 -- OSGL v1.6.2 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
@@ -22,30 +25,27 @@ local osglTools = image.Parent
 local osglScripts = osglTools.scripts
 
 local PNG = require(image.png)
+local BMP = require(image.bmp)
 local notif = require(osglScripts.notif)
-
--- local CHUNK_LIMIT = 200000 -- Equivilent to 200KB
 
 function toHex(num: number): string
     return string.format("%02X", num)
 end
 
-function estimateOutput(width: number, height: number)
-    local bufferLength = width * height * 12
-
-    local headerLength = 84
-    local widthLength = string.len(tostring(width))
-    local heightLength = string.len(tostring(height))
-
-    return headerLength + widthLength + heightLength + bufferLength + (width * height * 4)
-end
+local loadingTask
 
 return {
     Name = "Image Uploader",
     Icon = "rbxassetid://71989091852609",
 
     OnButtonClick = function(pluginButton: PluginToolbarButton)
-        if _G.osglTools.imageEditorRunning == true then
+        if _G.osglTools.imageEditorRunning == true and loadingTask then
+            task.cancel(loadingTask)
+            loadingTask = nil
+            pluginButton.Icon = "rbxassetid://71989091852609"
+            _G.osglTools.imageEditorRunning = false
+
+            notif.invoke("Stopped conversion.")
             return
         end
 
@@ -62,40 +62,66 @@ return {
         end
 
         -- Prompt the user for a PNG
-        local files: {File} = StudioService:PromptImportFiles({ "png" })
+        local files: { File } = StudioService:PromptImportFiles({ "png", "bmp" })
         for _, file in files do
+            local extensionTable = string.split(file.Name, ".")
+            local extension = extensionTable[#extensionTable]
+
+            pluginButton.Icon = "rbxassetid://103190868047609"
+
             local Success, pngData = pcall(function()
-                return PNG.decode(buffer.fromstring(file:GetBinaryContents()))
+                if extension == "bmp" then
+                    return BMP.Parse(file)
+                else
+                    return PNG.decode(buffer.fromstring(file:GetBinaryContents()))
+                end
             end)
 
             local fileName = string.match(file.Name, "(.+)%..+$") or file.Name
             if not Success then
                 notif.invoke(`Failed to convert Texture '{fileName}'! Could not convert PNG.`)
+                warn(`[osgl-tools]: Failed to convert Texture '{fileName}' with error '{pngData}'`)
                 continue
             end
 
             local width, height = pngData.width, pngData.height
             local indexes = width * height
-            local bfr = ""
 
             notif.invoke(`Converting '{fileName}'.`)
 
-            task.wait(.1)
+            task.wait(0.1)
 
             local startTime = os.clock()
             local endTime
-            Success, _ = pcall(function()
-                for offset = 0, indexes - 1 do
-                    local Col = pngData.readPixel((offset % width) + 1, (offset // width) + 1)
-                    bfr ..= `\\x{toHex(Col.r)}\\x{toHex(Col.g)}\\x{toHex(Col.b )}\\x{toHex(Col.a)}`
+
+            local tab = table.create(indexes * 4, "")
+
+            local function defaultWrite()
+                for pixel_index = 0, indexes - 1 do 
+                    local x = (pixel_index % width) + 1
+                    local y = math.floor(pixel_index / width) + 1
+                    
+                    local R, G, B, A = pngData.readPixel(x, y)
+                    
+                    local byte_offset = pixel_index * 4
+                    
+                    tab[byte_offset + 1] = toHex(R)
+                    tab[byte_offset + 2] = toHex(G)
+                    tab[byte_offset + 3] = toHex(B)
+                    tab[byte_offset + 4] = toHex(A)
                 end
 
                 endTime = math.floor((os.clock() - startTime) * 100 + 0.5) / 100
-            end)
+            end
 
-            if not Success then
-                notif.invoke(`Failed to convert Texture '{fileName}'! Could not convert PNG.`)
-                continue
+            loadingTask = task.spawn(defaultWrite)
+
+            repeat
+                task.wait()
+            until endTime or not loadingTask
+
+            if not loadingTask then
+                return
             end
 
             totalTime += endTime
@@ -104,7 +130,10 @@ return {
             output.Name = fileName
 
             ScriptEditorService:UpdateSourceAsync(output, function()
-                return `return \{\n\tversion = "1.6.2",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("{bfr}")\n}`
+                return `-- Generated with OSGL Image Uploader\n\nreturn \{\n\tversion = "1.6.2",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("\\x{table.concat(
+                    tab,
+                    "\\x"
+                )}")\n}`
             end)
 
             for _, parent in selectedParents do
@@ -123,13 +152,16 @@ return {
         local amountOfFiles = #files
         if amountOfFiles > 1 then
             local diff = amountOfFiles - successFiles
-            local extraMessage = successFiles == amountOfFiles and "" or ` with <b>{amountOfFiles - successFiles}</b> error{diff == 1 and "" or "s"}.`
-            notif.invoke(`Successfully converted <b>{successFiles}/{amountOfFiles}</b> files in <b>{totalTime}s</b>{extraMessage}`)
+            local extraMessage = successFiles == amountOfFiles and ""
+                or ` with <b>{amountOfFiles - successFiles}</b> error{diff == 1 and "" or "s"}.`
+            notif.invoke(
+                `Successfully converted <b>{successFiles}/{amountOfFiles}</b> files in <b>{totalTime}s</b>{extraMessage}`
+            )
         end
 
         Selection:Set(selectedItems)
 
         _G.osglTools.imageEditorRunning = false
         pluginButton.Icon = "rbxassetid://71989091852609"
-    end
+    end,
 }
