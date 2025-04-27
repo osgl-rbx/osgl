@@ -158,13 +158,12 @@ function Window.fromBuffer(buffer: buffer, width: number, height: number): Resul
     local image = editableImage:Unwrap()
     image:WritePixelsBuffer(Vector2.zero, Vector2.new(width, height), buffer)
 
-    local size = editableImage.Size
-    local width, height = size.X, size.Y
+    local size = image.Size
 
     local t = windowBase.new()
 
     t.surfaces = {}
-    t.editableImage = editableImage
+    t.editableImage = image
     t.buffer = buffer
     t.width = width
     t.height = height
@@ -172,7 +171,7 @@ function Window.fromBuffer(buffer: buffer, width: number, height: number): Resul
     t.targetFPS = 60
     t.lastRenderTime = os.clock()
 
-    return t
+    return result.new(true, t)
 end
 
 --[=[
