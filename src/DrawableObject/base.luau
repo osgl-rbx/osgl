@@ -227,7 +227,7 @@ end
 <em>Tints the entire object.</em>
   ]=]
 function DrawBaseImpl.Tint<T>(self: types.DrawableObject<T>, tint: number, factor: number)
-    doTint(self, tint, factor, self.width - 1, self.height - 1)
+    doTint(self, tint, factor, 0, 0, self.width - 1, self.height - 1)
 end
 
 --[=[
