@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.6.15 - Open-Source Graphical Library
+-- OSGL v1.6.2 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -68,11 +68,6 @@ end
 <em>Creates a new </em><code>Window</code></em><em> object given a </em><code>EditableImage</code><em>.</em>
   ]=]
 function Window.new(editableImage: EditableImage, renderers: { types.Drawable }): types.Window
-    -- Check if the EditableImage can be used
-    local S, E = pcall(function()
-        return editableImage:WritePixelsBuffer(Vector2.zero, Vector2.new(1, 1), buffer.create(4))
-    end)
-
     local content = Content.fromObject(editableImage)
     for _, renderObject in ipairs(renderers) do
         local sourceProperty = Window.getRenderingProperty(renderObject)
@@ -121,7 +116,7 @@ end
 <strong>@OSGL/Window</strong>
 <em>Creates a new </em><code>Window</code><em> object given an asset id.</em>
   ]=]
-function Window.fromAssetId(assetId: string): Result<types.Window, oEnum.WindowError>
+function Window.fromAssetId(assetId: number): Result<types.Window, oEnum.WindowError>
     local texture = Content.fromAssetId(assetId)
 
     local success, editableImage = pcall(function()
@@ -132,7 +127,21 @@ function Window.fromAssetId(assetId: string): Result<types.Window, oEnum.WindowE
         return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
     end
 
-    return result.new(true, Window.new(editableImage))
+    local size = editableImage.Size
+    local width, height = size.X, size.Y
+
+    local t = windowBase.new()
+
+    t.surfaces = {}
+    t.editableImage = editableImage
+    t.buffer = editableImage:ReadPixelsBuffer(Vector2.zero, size)
+    t.width = width
+    t.height = height
+    t.size = size
+    t.targetFPS = 60
+    t.lastRenderTime = os.clock()
+
+    return result.new(true, t)
 end
 
 --[=[
@@ -149,7 +158,20 @@ function Window.fromBuffer(buffer: buffer, width: number, height: number): Resul
     local image = editableImage:Unwrap()
     image:WritePixelsBuffer(Vector2.zero, Vector2.new(width, height), buffer)
 
-    return result.new(true, Window.new(image, {}))
+    local size = image.Size
+
+    local t = windowBase.new()
+
+    t.surfaces = {}
+    t.editableImage = image
+    t.buffer = buffer
+    t.width = width
+    t.height = height
+    t.size = size
+    t.targetFPS = 60
+    t.lastRenderTime = os.clock()
+
+    return result.new(true, t)
 end
 
 --[=[
