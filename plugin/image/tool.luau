@@ -24,33 +24,20 @@ local image = script.Parent
 local osglTools = image.Parent
 local osglScripts = osglTools.scripts
 
-local PNG = require(image.png)
-local BMP = require(image.bmp)
+local imageLoader = require(osglTools.util.image)
+local const = require(osglTools.util.const)
 local notif = require(osglScripts.notif)
 
-function toHex(num: number): string
-    return string.format("%02X", num)
-end
-
-local loadingTask
-
 return {
-    Name = "Image Uploader",
+    Name = "Image Importer",
     Icon = "rbxassetid://71989091852609",
 
     OnButtonClick = function(pluginButton: PluginToolbarButton)
-        if _G.osglTools.imageEditorRunning == true and loadingTask then
-            task.cancel(loadingTask)
-            loadingTask = nil
-            pluginButton.Icon = "rbxassetid://71989091852609"
-            _G.osglTools.imageEditorRunning = false
-
-            notif.invoke("Stopped conversion.")
+        if _G.osglTools.imageEditorRunning then
             return
         end
 
         _G.osglTools.imageEditorRunning = true
-        pluginButton.Icon = "rbxassetid://73679864301651"
 
         local totalTime = 0
         local selectedParents = Selection:Get()
@@ -61,68 +48,32 @@ return {
             table.insert(selectedParents, workspace)
         end
 
-        -- Prompt the user for a PNG
-        local files: { File } = StudioService:PromptImportFiles({ "png", "bmp" })
+        -- Prompt the user for files
+        local files: { File } = StudioService:PromptImportFiles(const.supportedFileTypes)
         for _, file in files do
-            local extensionTable = string.split(file.Name, ".")
-            local extension = extensionTable[#extensionTable]
+            local success, decoder = imageLoader.load(file)
 
-            pluginButton.Icon = "rbxassetid://103190868047609"
-
-            local Success, pngData = pcall(function()
-                if extension == "bmp" then
-                    return BMP.Parse(file)
-                else
-                    return PNG.decode(buffer.fromstring(file:GetBinaryContents()))
-                end
-            end)
+            pluginButton.Icon = "rbxassetid://71989091852609"
 
             local fileName = string.match(file.Name, "(.+)%..+$") or file.Name
-            if not Success then
-                notif.invoke(`Failed to convert Texture '{fileName}'! Could not convert PNG.`)
-                warn(`[osgl-tools]: Failed to convert Texture '{fileName}' with error '{pngData}'`)
+            if not success then
+                notif.invoke(`Failed to convert Texture '{fileName}'! Could not convert Item.`)
+                warn(`[osgl-tools]: Failed to convert Texture '{fileName}'`)
                 continue
             end
 
-            local width, height = pngData.width, pngData.height
-            local indexes = width * height
-
             notif.invoke(`Converting '{fileName}'.`)
-
-            task.wait(0.1)
 
             local startTime = os.clock()
             local endTime
+            local value
 
-            local tab = table.create(indexes * 4, "")
-
-            local function defaultWrite()
-                for pixel_index = 0, indexes - 1 do 
-                    local x = (pixel_index % width) + 1
-                    local y = math.floor(pixel_index / width) + 1
-                    
-                    local R, G, B, A = pngData.readPixel(x, y)
-                    
-                    local byte_offset = pixel_index * 4
-                    
-                    tab[byte_offset + 1] = toHex(R)
-                    tab[byte_offset + 2] = toHex(G)
-                    tab[byte_offset + 3] = toHex(B)
-                    tab[byte_offset + 4] = toHex(A)
-                end
-
-                endTime = math.floor((os.clock() - startTime) * 100 + 0.5) / 100
-            end
-
-            loadingTask = task.spawn(defaultWrite)
+            value = decoder:asOSGL()
+            endTime = os.clock() - startTime
 
             repeat
                 task.wait()
-            until endTime or not loadingTask
-
-            if not loadingTask then
-                return
-            end
+            until endTime
 
             totalTime += endTime
 
@@ -130,10 +81,7 @@ return {
             output.Name = fileName
 
             ScriptEditorService:UpdateSourceAsync(output, function()
-                return `-- Generated with OSGL Image Uploader\n\nreturn \{\n\tversion = "1.6.2",\n\twidth = {width},\n\theight = {height},\n\tpixels = buffer.fromstring("\\x{table.concat(
-                    tab,
-                    "\\x"
-                )}")\n}`
+                return value
             end)
 
             for _, parent in selectedParents do
@@ -144,7 +92,7 @@ return {
             end
 
             output:Destroy()
-            notif.invoke(`Successfully converted '{fileName}' in {endTime}s`)
+            notif.invoke(string.format("Successfully converted '%s' in %.2fs", fileName, endTime))
 
             successFiles += 1
         end

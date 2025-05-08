@@ -11,8 +11,11 @@
                 "scripts": {
                     "$path": "plugin/scripts"
                 },
-                "config": {
-                    "$path": "plugin/config"
+                "editor": {
+                    "$path": "plugin/editor"
+                },
+                "util": {
+                    "$path": "plugin/util"
                 },
                 "OSGL": {
                     "$path": "src"
