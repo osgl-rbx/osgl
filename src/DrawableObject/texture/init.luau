@@ -207,8 +207,16 @@ function Texture.drawChecked<T>(
     rotation = rotation or 0
 
     if rotation == 0 then
-        local drawWidth = math.min(texture.width, object.width - textureX)
-        local drawHeight = math.min(texture.height, object.height - textureY)
+        local xOffset = if textureX < 0 then math.abs(textureX) else 0
+        local yOffset = if textureY < 0 then math.abs(textureY) else 0
+
+        local xPosition = if textureX < 0 then xOffset else textureX
+        
+        texture.width -= xOffset
+        texture.height -= yOffset
+
+        local drawWidth = math.min(texture.width, object.width - textureX - xOffset)
+        local drawHeight = math.min(texture.height, object.height - textureY - yOffset)
         
         if drawWidth <= 0 or drawHeight <= 0 then
             return
@@ -218,19 +226,22 @@ function Texture.drawChecked<T>(
         local sourceBuffer = texture.buffer
         local targetSize = texture.width * 4
 
-        local maxY = if textureY + drawHeight - 1 > object.width
-            then object.width - textureY - 1 
+        local maxY = if textureY + drawHeight - 1 > object.height
+            then object.height - textureY - 1 
             else drawHeight - 1
 
-        for y = 0, maxY do
+        for y = yOffset, maxY do
             buffer.copy(
                 targetBuffer,
-                ((textureY + y) * object.width + textureX) * 4,
+                ((textureY + y) * object.width + textureX + xOffset) * 4,
                 sourceBuffer,
-                y * targetSize,
+                (y * (texture.width + xOffset) + xPosition) * 4,
                 drawWidth * 4
             )
         end
+        
+        texture.width += xOffset
+        texture.height += yOffset
     else
         drawRotated(object, texture, textureX, textureY, rotation)
     end
