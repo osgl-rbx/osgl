@@ -132,7 +132,7 @@ function Font.Draw<T>(
                     for fh = 1, height do
                         local bit = buffer.readu8(pixelData, index)
                         if bit == 1 then
-                            draw.pixel(object, x + fw, y + fh + heightDrop, color)
+                            draw.Pixel(object, x + fw, y + fh + heightDrop, color)
                         end
 
                         index += 1
@@ -143,7 +143,7 @@ function Font.Draw<T>(
                     for fw = 1, width do
                         local bit = readBitNumber(pixelData[fw], fh)
                         if bit == 1 then
-                            draw.pixel(object, x + fw, y + fh + heightDrop, color)
+                            draw.Pixel(object, x + fw, y + fh + heightDrop, color)
                         end
                     end
                 end
