@@ -262,25 +262,7 @@ function Texture.drawUnchecked<T>(
     rotation = rotation or 0
 
     if rotation == 0 then
-        local drawWidth = math.min(texture.width, object.width - textureX)
-        local drawHeight = math.min(texture.height, object.height - textureY)
-
-        local targetBuffer = object.buffer
-        local sourceBuffer = texture.buffer
-        local targetSize = texture.width * 4
-
-        local targetOffset = (textureY * object.width + textureX) * 4
-        local sourceOffset = 0
-
-        for y = 0, drawHeight - 1 do
-            buffer.copy(
-                targetBuffer,
-                targetOffset + y * targetSize,
-                sourceBuffer,
-                sourceOffset + y * targetSize,
-                drawWidth * 4
-            )
-        end
+        Texture.drawChecked(object, texture, textureX, textureY, rotation)
     else
         drawRotatedUnchecked(object, texture, textureX, textureY, rotation)
     end
