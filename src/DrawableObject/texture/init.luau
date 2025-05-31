@@ -218,15 +218,16 @@ function Texture.drawChecked<T>(
         local sourceBuffer = texture.buffer
         local targetSize = texture.width * 4
 
-        local targetOffset = (textureY * object.width + textureX) * 4
-        local sourceOffset = 0
+        local maxY = if textureY + drawHeight - 1 > object.width
+            then object.width - textureY - 1 
+            else drawHeight - 1
 
-        for y = 0, drawHeight - 1 do
+        for y = 0, maxY do
             buffer.copy(
                 targetBuffer,
-                targetOffset + y * targetSize,
+                ((textureY + y) * object.width + textureX) * 4,
                 sourceBuffer,
-                sourceOffset + y * targetSize,
+                y * targetSize,
                 drawWidth * 4
             )
         end
