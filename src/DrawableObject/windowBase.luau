@@ -1,5 +1,5 @@
 ------------------------------------------------------------
--- OSGL v1.6.15 - Open-Source Graphical Library
+-- OSGL v1.6.2 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -57,6 +57,8 @@ end
 <em>Adds an additional list of objects to render the </em><code>Window</code><em> to.</em>
   ]=]
 function WindowBaseImpl.AddRenderers(self: types.Window, ...: types.Drawable)
+    local content = Content.fromObject(self.editableImage)
+    
     for _, v in {...} do
         if not table.find(self.surfaces, v) then
             local prop = util.getRendererProp(v)
@@ -64,7 +66,7 @@ function WindowBaseImpl.AddRenderers(self: types.Window, ...: types.Drawable)
                 return
             end
 
-            v[prop] = self.editableImage
+            v[prop] = content
 
             table.insert(self.surfaces, v)
         end

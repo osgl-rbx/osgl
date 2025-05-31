@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.6.15 - Open-Source Graphical Library
+-- OSGL v1.6.2 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -17,18 +17,26 @@
 ------------------------------------------------------------
 
 local OSGL = script.Parent.Parent
-local draw = OSGL.draw
 local types = require(OSGL.types)
-local pixel = require(draw.pixel)
 
 return function<T>(object: types.DrawableObject<T>, bfr: buffer, width: number, height: number, x: number, y: number)
-    for i = 0, width - 1 do
-        local pixelX = x + i
-        for j = 0, height - 1 do
-            local pixelY = y + j
+    local drawWidth = math.min(width, object.width - x)
+    local drawHeight = math.min(height, object.height - y)
 
-            local col = buffer.readu32(bfr, (y * width + x) * 4)
-            pixel(object, pixelX, pixelY, col)
-        end
+    local targetBuffer = object.buffer
+    local sourceBuffer = bfr
+    local targetSize = width * 4
+
+    local targetOffset = (y * object.width + x) * 4
+    local sourceOffset = 0
+
+    for y = 0, drawHeight - 1 do
+        buffer.copy(
+            targetBuffer,
+            targetOffset + y * targetSize,
+            sourceBuffer,
+            sourceOffset + y * targetSize,
+            drawWidth * 4
+        )
     end
 end

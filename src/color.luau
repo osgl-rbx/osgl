@@ -1,7 +1,7 @@
 --!optimize 2
 
 ------------------------------------------------------------
--- OSGL v1.6.15 - Open-Source Graphical Library
+-- OSGL v1.6.2 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -356,7 +356,15 @@ end
 <em>Creates a </em><code>Color</code><em> from a </em><code>Color3</code><em>.</em>
   ]=]
 function color.fromColor3(color3: Color3, a: number?): number
-    return color.new(color3.R * 255, color3.G * 255, color3.B * 255, a)
+    return color.new(color3.R * 255, color3.G * 255, color3.B * 255, a or 255)
+end
+
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Creates a </em><code>Color</code><em> from a </em><code>Vector3</code><em>.</em>
+  ]=]
+  function color.fromVector3(vector3: Vector3, a: number?): number
+    return color.new(vector3.X * 255, vector3.Y * 255, vector3.Z * 255, a or 255)
 end
 
 --[=[

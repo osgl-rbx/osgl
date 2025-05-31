@@ -2,7 +2,7 @@
 --!native
 
 ------------------------------------------------------------
--- OSGL v1.6.15 - Open-Source Graphical Library
+-- OSGL v1.6.2 - Open-Source Graphical Library
 -- Created/maintained by @saaawdust and contributors
 --
 -- Free to use, modify and distribute in your projects (including commercial games ;3)
@@ -227,7 +227,7 @@ end
 <em>Tints the entire object.</em>
   ]=]
 function DrawBaseImpl.Tint<T>(self: types.DrawableObject<T>, tint: number, factor: number)
-    doTint(self, tint, factor, self.width - 1, self.height - 1)
+    doTint(self, tint, factor, 0, 0, self.width - 1, self.height - 1)
 end
 
 --[=[
