@@ -230,7 +230,7 @@ function Texture.drawChecked<T>(
             then object.height - textureY - 1 
             else drawHeight - 1
 
-        for y = yOffset, maxY do
+        for y = yOffset, maxY - 1 do
             buffer.copy(
                 targetBuffer,
                 ((textureY + y) * object.width + textureX + xOffset) * 4,
