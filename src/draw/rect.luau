@@ -61,7 +61,13 @@ return function<T>(object: types.DrawableObject<T>, xPos: number, yPos: number, 
                     continue
                 end
 
-                local pixelColor = if x > (w + xPos) or y > (h + yPos) then stroke else fill
+                local pixelColor = if (
+                        x + strokeLength > (w + xPos)
+                        or x - xPos < strokeLength
+                        or y + strokeLength > (h + yPos)
+                        or y - yPos < strokeLength
+                    ) then stroke
+                    else fill
 
                 pixel(object, x, y, pixelColor)
             end
