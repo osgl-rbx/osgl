@@ -210,8 +210,6 @@ function Texture.drawChecked<T>(
         local xOffset = if textureX < 0 then math.abs(textureX) else 0
         local yOffset = if textureY < 0 then math.abs(textureY) else 0
 
-        local xPosition = if textureX < 0 then xOffset else textureX
-        
         texture.width -= xOffset
         texture.height -= yOffset
 
@@ -230,12 +228,12 @@ function Texture.drawChecked<T>(
             then object.height - textureY - 1 
             else drawHeight - 1
 
-        for y = yOffset, maxY - 1 do
+        for y = yOffset, maxY do
             buffer.copy(
                 targetBuffer,
                 ((textureY + y) * object.width + textureX + xOffset) * 4,
                 sourceBuffer,
-                (y * (texture.width + xOffset) + xPosition) * 4,
+                (y * (texture.width + xOffset)) * 4,
                 drawWidth * 4
             )
         end
