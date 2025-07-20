@@ -24,6 +24,7 @@
 --
 ------------------------------------------------------------
 
+
 local OSGL = script.Parent.Parent
 local types = require(OSGL.types)
 
@@ -38,7 +39,8 @@ return function<T>(object: types.DrawableObject<T>, startX: number, startY: numb
 	local bfr = object.buffer
 
 	-- get the target color to replace
-	local target = object:ReadPixelUnchecked(x0, y0)
+	local target = readU32(bfr, (y0 * w + x0) * 4)
+	
 	if target == newColor then
 		return -- nothing to do
 	end
