@@ -23,6 +23,8 @@ local bit32lshift = bit32.lshift
 local bit32rshift = bit32.rshift
 local bit32band = bit32.band
 
+local lerp = math.lerp
+
 --[=[
     @class Color
 
@@ -387,12 +389,41 @@ function color.tint(color1: types.Color, color2: types.Color, factor: number)
         return color2
     else
         return color.new(
-            math.lerp(color.r(color1), color.r(color2), factor),
-            math.lerp(color.g(color1), color.g(color2), factor),
-            math.lerp(color.b(color1), color.b(color2), factor),
-            math.lerp(color.a(color1), color.a(color2), factor)
+            lerp(color.r(color1), color.r(color2), factor),
+            lerp(color.g(color1), color.g(color2), factor),
+            lerp(color.b(color1), color.b(color2), factor),
+            lerp(color.a(color1), color.a(color2), factor)
         )
     end
+end
+
+--[=[
+    Inverts the color, returning the opposite color, optionally
+    inverting the alpha channel.
+
+    ```lua
+    local OSGL = require(path.to.osgl)
+    local color = OSGL.color
+
+    local cyan = color.invert(color.RED)
+    ```
+
+    @param color1 Color -- The color to invert
+    @param invertAlpha boolean -- Whether to invert the alpha or not. Defaults to false.
+    @within Color
+    @return number
+]=]
+--[=[
+<strong>@OSGL/Color</strong>
+<em>Inverts a </em><code>Color</code><em>.</em>
+  ]=]
+function color.invert(color1: types.Color, invertAlpha: boolean?)
+    return color.new(
+        255 - color.r(color1),
+        255 - color.g(color1),
+        255 - color.b(color1),
+        invertAlpha and 255 - color.a(color1) or color.a(color1)
+    )
 end
 
 --- @prop RED Color
