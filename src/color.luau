@@ -53,9 +53,9 @@ local color = {}
   ]=]
 function color.new(r: number?, g: number?, b: number?, a: number?): types.Color
     return bit32bor(
-        if a then a * (2^24) else 255 * (2^24),
-        if b then b * (2^16) else 0,
-        if g then g * (2^8) else 0,
+        if a then a * 16777216 else 4278190080,
+        if b then b * 65536 else 0,
+        if g then g * 256 else 0,
         r or 0
     )
 end
