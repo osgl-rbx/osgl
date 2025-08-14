@@ -81,15 +81,11 @@ end
 <em>Creates a new RGBA </em><code>Color</code><em> from an RGB one.</em>
   ]=]
 function color.newRGB(r: number?, g: number?, b: number?): types.Color
-    r = r or 0
-    g = g or 0
-    b =  b or 0
-
     return bit32bor(
         color.BLACK,
-        bit32lshift(b, 16),
-        bit32lshift(g, 8),
-        r
+        if b then b * 65536 else 0,
+        if g then g * 256 else 0,
+        r or 0
     )
 end
 
