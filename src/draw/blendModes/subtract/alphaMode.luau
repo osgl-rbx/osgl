@@ -19,7 +19,6 @@ local Draw = script.Parent.Parent.Parent
 local OSGL = Draw.Parent
 local types = require(OSGL.types)
 local color = require(OSGL.color)
-local normal = require(script.Parent.Parent.normal.alphaMode)
 
 local r = color.r
 local g = color.g
