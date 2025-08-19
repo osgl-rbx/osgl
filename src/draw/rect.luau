@@ -21,7 +21,6 @@ local draw = OSGL.draw
 local types = require(OSGL.types)
 local color = require(OSGL.color)
 local fillPolygon = require(draw.polygon)
-local pixel = require(draw.pixel)
 
 return function<T>(object: types.DrawableObject<T>, xPos: number, yPos: number, width: number, height: number, fill: types.Color?, stroke: types.Color?, strokeThickness: number?, rotation: number?)
     fill = fill or color.BLACK
@@ -29,6 +28,7 @@ return function<T>(object: types.DrawableObject<T>, xPos: number, yPos: number, 
     stroke = stroke or color.TRANSPARENT
     strokeThickness = strokeThickness or 0
 
+    local pixel = object.Pixel
     local strokeLength = if stroke ~= color.TRANSPARENT then strokeThickness else 0
 
     local sizeX, sizeY = object.width, object.height

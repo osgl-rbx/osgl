@@ -44,6 +44,8 @@ export type DrawableObject<T> = DrawingContext<T> & {
     height: number,
     size: Vector2,
 
+    GetBlendingMode: (self: T) -> oEnum.BlendingMode,
+    SetBlendingMode: (self: T, blendingMode: oEnum.BlendingMode) -> nil,
     Resize: (self: T, width: number, height: number) -> Result<nil, oEnum.DrawableObjectError>,
     Serialize: (self: T) -> (buffer, number, number),
     Deserialize: (self: T, buffer: buffer, width: number, height: number) -> Result<nil, oEnum.DrawableObjectError>,
@@ -70,16 +72,20 @@ export type DrawingContext<T> = {
     Clear: (self: T, Color: Color?) -> nil,
 }
 
-export type BaseRawTexture<T> = {
-    version: string & T,
-    width: number,
-    height: number,
-    pixels: buffer
+export type BaseRawTexture = {
+    version: number,
+    get: () -> (number, number, buffer),
+    free: () -> ()
 }
 
-export type BaseUnloadedTexture = BaseRawTexture<"1.6.1">
-export type OSGLTexture = DrawableObject<OSGLTexture>
-export type RawTexture = ModuleScript | BaseUnloadedTexture
+type MemoryManagedObject<T> = {
+    Load: (self: T) -> (),
+    Free: (self: T) -> (),
+}
+
+export type OSGLTexture = DrawableObject<OSGLTexture> & MemoryManagedObject<OSGLTexture>
+
+export type RawTexture = ModuleScript | BaseRawTexture
 export type Bitmap = {
     channels: number,
     width: number,
@@ -87,7 +93,7 @@ export type Bitmap = {
     buffer: buffer,
     Read: (self: Bitmap, X: number, Y: number, channel: number?) -> number,
     Write: (self: Bitmap, X: number, Y: number, channel: number, value: number) -> nil,
-}
+} & MemoryManagedObject<Bitmap>
 
 export type Glyph = {
     number | buffer | { number }

@@ -27,6 +27,8 @@ local util = require(OSGL.util)
 local draw = require(OSGL.draw)
 local color = require(OSGL.color)
 
+local blendCache = util.BLEND_MODULES
+
 type Result<T, E> = result.Result<T, E>
 
 local DrawBaseImpl = {}
@@ -112,9 +114,8 @@ function DrawBaseImpl.Deserialize<T>(
     width: number,
     height: number
 ): Result<nil, oEnum.DrawableObjectError>
-
     local otherBuffLen = buffer.len(buff)
-    if (otherBuffLen ~= width * height * 4) then
+    if otherBuffLen ~= width * height * 4 then
         return result.new(false, oEnum.DrawableObjectError.BadBufferSize)
     end
 
@@ -234,7 +235,7 @@ end
 <strong>@OSGL/Drawable</strong>
 <em>Resamples the entire object.</em>
   ]=]
-  function DrawBaseImpl.Resample<T>(self: types.DrawableObject<T>, scale: number?)
+function DrawBaseImpl.Resample<T>(self: types.DrawableObject<T>, scale: number?)
     scale = scale or 1
 
     -- Get original texture size and buffer
@@ -256,7 +257,7 @@ end
         end
     end
 
-    local size = Vector2.new(newWidth, newHeight);
+    local size = Vector2.new(newWidth, newHeight)
     if self.editableImage then
         local editableImage = AssetService:CreateEditableImage({ Size = size })
         if not editableImage then
@@ -281,11 +282,24 @@ end
     self.buffer = newBuffer
 end
 
+function DrawBaseImpl.SetBlendingMode<T>(self: types.DrawableObject<T>, blending: oEnum.BlendingMode)
+    (self :: any)._blendMode = blending;
+    (self :: any).Pixel = blendCache[blending]
+end
+
+function DrawBaseImpl.GetBlendingMode<T>(self: types.DrawableObject<T>)
+    return (self :: any)._blendMode
+end
+
 export type Base = typeof(DrawBaseImpl)
 
 return {
     new = function(): Base
         return {
+            _blendMode = oEnum.BlendingMode.Overwrite,
+
+            GetBlendingMode = DrawBaseImpl.GetBlendingMode,
+            SetBlendingMode = DrawBaseImpl.SetBlendingMode,
             Resize = DrawBaseImpl.Resize,
             Serialize = DrawBaseImpl.Serialize,
             Deserialize = DrawBaseImpl.Deserialize,
@@ -307,6 +321,6 @@ return {
             Clear = draw.Clear,
             Chunk = draw.Chunk,
             FloodFill = draw.FloodFill,
-        }
-    end
+        } :: Base
+    end,
 }

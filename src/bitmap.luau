@@ -21,7 +21,7 @@ local util = require(OSGL.util)
 
 type Result<T, E> = result.Result<T, E>
 
-local function checkUnloadedBitmap(unloadedBitmap: types.RawTexture): Result<types.BaseUnloadedTexture, oEnum.TextureError>
+local function checkUnloadedBitmap(unloadedBitmap: types.RawTexture): Result<types.BaseRawTexture, oEnum.TextureError>
     if typeof(unloadedBitmap) == "Instance" and unloadedBitmap:IsA("ModuleScript") then
         unloadedBitmap = require(unloadedBitmap)
     end
@@ -73,11 +73,11 @@ end
 <strong>@Unchecked!</strong>
 <em>Creates a new </em><code>Bitmap</code><em> from an unloaded one.</em>
   ]=]
-function Bitmap.fromUnchecked(rawBitmap: types.BaseUnloadedTexture): types.Bitmap
-    local width, height, bfr = rawBitmap.width, rawBitmap.height, rawBitmap.pixels
+function Bitmap.fromUnchecked(rawBitmap: types.BaseRawTexture): types.Bitmap
+    local width, height, bfr = rawBitmap.get()
     local channels = buffer.len(bfr) / (width * height)
 
-    return {
+    local t = {
         width = width,
         height = height,
         buffer = bfr,
@@ -86,6 +86,19 @@ function Bitmap.fromUnchecked(rawBitmap: types.BaseUnloadedTexture): types.Bitma
         Read = Read,
         Write = Write,
     }
+
+    t.Free = function()
+        t.buffer = nil
+        rawBitmap.free()
+    end
+
+    t.Load = function()
+        t.width, t.height, t.buffer = rawBitmap.get()
+    end
+
+    bfr = nil
+
+    return t
 end
 
 return Bitmap

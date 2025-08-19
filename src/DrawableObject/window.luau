@@ -82,7 +82,7 @@ function Window.new(editableImage: EditableImage, renderers: { types.Drawable })
     local width, height = size.X, size.Y
 
     local t = windowBase.new()
-
+        
     t.surfaces = renderers
     t.editableImage = editableImage
     t.buffer = buffer.create(width * height * 4)

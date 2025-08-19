@@ -28,53 +28,62 @@ local types = require(OSGL.types)
 local result = require(OSGL.result)
 local oEnum = require(OSGL.enums)
 local util = require(OSGL.util)
-local draw = require(OSGL.draw)
-local pixel = draw.Pixel
 
 type Result<T, E> = result.Result<T, E>
 
-local floor = math.floor
+local round = math.round
 
 local Texture = {}
 
 local function drawRotated<T>(
     object: types.DrawableObject<T>,
     texture: types.OSGLTexture,
-    textureX: number,
+    textureX: number, -- top-left dest position where the texture would normally draw
     textureY: number,
     rotation: number
 )
-    local sizeY = texture.height
-    local sizeX = texture.width
+    local pixel = object.Pixel
+
+    local objW, objH = object.width, object.height
+    local texW, texH = texture.width, texture.height
     local bfr = texture.buffer
 
     local radians = math.rad(rotation)
     local cosR = math.cos(radians)
     local sinR = math.sin(radians)
 
-    local centerX = textureX + sizeX / 2
-    local centerY = textureY + sizeY / 2
+    local centerX = textureX + texW / 2
+    local centerY = textureY + texH / 2
 
-    local function rotate(x: number, y: number): number
-        local relX = x - centerX
-        local relY = y - centerY
+    local destX0 = textureX
+    local destY0 = textureY
+    local destX1 = textureX + texW - 1
+    local destY1 = textureY + texH - 1
 
-        local rotatedX = cosR * relX - sinR * relY
-        local rotatedY = sinR * relX + cosR * relY
+    if destX0 < 0 then destX0 = 0 end
+    if destY0 < 0 then destY0 = 0 end
+    if destX1 >= objW then destX1 = objW - 1 end
+    if destY1 >= objH then destY1 = objH - 1 end
 
-        return rotatedX + centerX, rotatedY + centerY
-    end
+    for dy = destY0, destY1 do
+        for dx = destX0, destX1 do
+            local relX = dx - centerX
+            local relY = dy - centerY
 
-    for y = 0, sizeY - 1 do
-        for x = 0, sizeX - 1 do
-            x += textureX
-            y += textureY
+            local sxWorld =  cosR * relX + sinR * relY + centerX
+            local syWorld = -sinR * relX + cosR * relY + centerY
 
-            local sourceX, sourceY = rotate(x, y)
+            local sx = sxWorld - textureX
+            local sy = syWorld - textureY
 
-            if sourceX >= 0 and sourceX < sizeX and sourceY >= 0 and sourceY < sizeY then
-                local pixelColor = buffer.readu32(bfr, floor(sourceY) * sizeX * 4 + floor(sourceX) * 4)
-                pixel(object, x, y, pixelColor)
+            if sx >= 0 and sx < texW and sy >= 0 and sy < texH then
+                local isx = round(sx)
+                local isy = round(sy)
+                if isx >= 0 and isx < texW and isy >= 0 and isy < texH then
+                    local idx = (isy * texW + isx) * 4
+                    local pixelColor = buffer.readu32(bfr, idx)
+                    pixel(object, dx, dy, pixelColor)
+                end
             end
         end
     end
@@ -87,43 +96,39 @@ local function drawRotatedUnchecked<T>(
     textureY: number,
     rotation: number
 )
-    local sizeY = texture.height
-    local sizeX = texture.width
+    local pixel = object.Pixel
+
+    local texW, texH = texture.width, texture.height
     local bfr = texture.buffer
 
     local radians = math.rad(rotation)
     local cosR = math.cos(radians)
     local sinR = math.sin(radians)
 
-    local centerX = textureX + sizeX / 2
-    local centerY = textureY + sizeY / 2
+    local centerX = textureX + texW / 2
+    local centerY = textureY + texH / 2
 
-    local function rotate(x: number, y: number): number
-        local relX = x - centerX
-        local relY = y - centerY
+    for dy = textureY, textureY + texH - 1 do
+        for dx = textureX, textureX + texW - 1 do
+            local relX = dx - centerX
+            local relY = dy - centerY
 
-        local rotatedX = cosR * relX - sinR * relY
-        local rotatedY = sinR * relX + cosR * relY
+            local sx =  cosR * relX + sinR * relY + texW / 2
+            local sy = -sinR * relX + cosR * relY + texH / 2
 
-        return rotatedX + centerX, rotatedY + centerY
-    end
+            local isx = math.floor(sx + 0.5)
+            local isy = math.floor(sy + 0.5)
 
-    for y = 0, sizeY - 1 do
-        for x = 0, sizeX - 1 do
-            x += textureX
-            y += textureY
-
-            local sourceX, sourceY = rotate(x, y)
-
-            local pixelColor = buffer.readu32(bfr, floor(sourceY) * sizeX * 4 + floor(sourceX) * 4)
-            pixel(object, x, y, pixelColor)
+            local idx = (isy * texW + isx) * 4
+            local pixelColor = buffer.readu32(bfr, idx)
+            pixel(object, dx, dy, pixelColor)
         end
     end
 end
 
 local function checkUnloadedTexture(
     unloadedTexture: types.RawTexture
-): Result<types.BaseUnloadedTexture, oEnum.TextureError>
+): Result<types.BaseRawTexture, oEnum.TextureError>
     if typeof(unloadedTexture) == "Instance" and unloadedTexture:IsA("ModuleScript") then
         unloadedTexture = require(unloadedTexture)
     end
@@ -155,15 +160,25 @@ end
 <strong>@Unchecked!</strong>
 <em>Creates a </em><code>Texture</code><em> from an unloaded one.</em>
   ]=]
-function Texture.fromUnchecked(rawTexture: types.BaseUnloadedTexture): types.OSGLTexture
-    local width, height = rawTexture.width, rawTexture.height
-
+function Texture.fromUnchecked(rawTexture: types.BaseRawTexture): types.OSGLTexture
+    local width, height, pixels = rawTexture.get()
     local t = base.new()
 
-    t.buffer = rawTexture.pixels
+    t.buffer = pixels
     t.width = width
     t.height = height
     t.size = Vector2.new(width, height)
+    t.Free = function()
+        t.buffer = nil
+        pixels = nil
+        rawTexture.free()
+    end
+
+    t.Load = function()
+        t.width, t.height, t.buffer = rawTexture.get()
+    end
+
+    pixels = nil
 
     return t
 end
@@ -188,8 +203,9 @@ end
 <strong>@Unchecked!</strong>
 <em>Serializes the </em><code>Texture</code><em>.</em>
   ]=]
-function Texture.serializeUnchecked(rawTexture: types.BaseUnloadedTexture): (buffer, number, number)
-    return rawTexture.pixels, rawTexture.width, rawTexture.height
+function Texture.serializeUnchecked(rawTexture: types.BaseRawTexture): (buffer, number, number)
+    local width, height, pixels = rawTexture.get()
+    return pixels, width, height
 end
 
 --[=[
@@ -222,7 +238,6 @@ function Texture.drawChecked<T>(
 
         local targetBuffer = object.buffer
         local sourceBuffer = texture.buffer
-        local targetSize = texture.width * 4
 
         local maxY = if textureY + drawHeight - 1 > object.height
             then object.height - textureY - 1 

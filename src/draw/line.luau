@@ -19,7 +19,6 @@
 local Draw = script.Parent
 local OSGL = Draw.Parent
 local types = require(OSGL.types)
-local pixel = require(Draw.pixel)
 local color = require(OSGL.color)
 
 return function<T>(object: types.DrawableObject<T>, startX: number, startY: number, stopX: number, stopY: number, thickness: number, c: types.Color)
@@ -30,6 +29,7 @@ return function<T>(object: types.DrawableObject<T>, startX: number, startY: numb
         return
     end
 
+    local pixel = object.Pixel
     local width, height = object.width, object.height
 
     local dx = stopX - startX

@@ -13,7 +13,7 @@
 -- Full license available in the LICENSE file
 ------------------------------------------------------------
 
-local Pixel = require(script.pixel)
+local Pixel = require(script.blendModes.overwrite)
 local PixelIndex = require(script.pixelIndex)
 local Line = require(script.line)
 local Rect = require(script.rect)
