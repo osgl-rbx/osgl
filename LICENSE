@@ -1,0 +1,44 @@
+OSGL LICENSE v1.6.15
+(Open-Source Graphical Library)
+
+1. DEFINITIONS
+"Software" means OSGL source code and related files.
+"Derivative Work" means any modified version of OSGL.
+"Commercial Use" means use in revenue-generating projects.
+
+2. PERMITTED USE
+You may:
+- Use the Software for any purpose
+- Modify and create Derivative Works
+- Distribute the Software or Derivative Works
+
+3. REQUIREMENTS
+You must:
+3.1. Keep this license and copyright notices intact
+3.2. Not claim authorship of the original Software
+
+4. PROHIBITIONS
+You may not:
+4.1. Sell or license OSGL as a standalone product
+4.2. Remove or alter original contributor credits
+4.3. Apply additional restrictions to Derivative Works
+
+5. CONTRIBUTOR RIGHTS
+5.1. All contributions are permanently licensed under these terms
+5.2. Contributors retain copyright to their specific contributions
+5.3. No contributor may revoke rights for already-distributed versions
+
+6. ATTRIBUTION
+6.1. Credit must be preserved in source files
+6.2. Project documentation should acknowledge major contributors
+
+7. DISCLAIMER
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+IN NO EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES,
+OR OTHER LIABILITY ARISING FROM USE OF THE SOFTWARE.
+
+8. TERMINATION
+Violation of this license terminates your rights immediately.
+
+© 2023-2025 OSGL Contributors
+This is a permanent, non-revocable license.
