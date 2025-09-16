@@ -15,4 +15,5 @@ export type ImageReader<T> = ImageReader.ImageReader<T>
 return {
     ImageReader = require(script.ImageReader),
     ImageFormat = require(script.ImageFormat),
+    ImageError = require(script.ImageError)
 }
