@@ -16,6 +16,9 @@
                 },
                 "osgl-image-uploader": {
                     "$path": "plugin/image"
+                },
+                "osgl-texture-viewer": {
+                    "$path": "plugin/view"
                 }
             }
         }
