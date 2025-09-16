@@ -1,12 +1,6 @@
 {
   "name": "image",
   "tree": {
-    "$className": "DataModel",
-
-    "ReplicatedStorage": {
-      "image": {
-        "$path": "src"
-      }
-    }
+    "$path": "src"
   }
 }

@@ -209,7 +209,6 @@ function Png.decode(cursor: Cursor)
 	fileData.zlibstream = nil
 
 	local bitmap = buffer.create(width * height * 4)
-	warn(header)
 
 	-- Is this image interlaced?
 	if header.interlaced then

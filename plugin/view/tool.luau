@@ -1,6 +1,7 @@
 return {
     Name = "Toggle texture preview",
-    Icon = "rbxassetid://100966199712253",
+    Tooltip = "Toggle texture preview",
+    Icon = "rbxassetid://82490094471802",
 
     OnButtonClick = function(pluginButton: PluginToolbarButton)
         
