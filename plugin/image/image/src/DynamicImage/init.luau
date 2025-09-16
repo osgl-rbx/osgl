@@ -24,6 +24,10 @@ end
 
 return {
     new = function<T>(width: number, height: number, buffer: buffer, header: T): DynamicImage<T>
+        if type(buffer) == "table" then
+            buffer = buffer[1]
+        end
+
         local self = table.clone(DynamicImage)
         self.width = width
         self.height = height
