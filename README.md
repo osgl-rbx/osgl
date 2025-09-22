@@ -9,22 +9,32 @@
   <img src="gh/Seperation.svg" alt="Section divider" style="margin: 8px 0 24px;">
 </h3>
 
-<div align="center">
+OSGL is a powerful graphics library for Roblox inspired by modern low-level graphics APIs.
 
-## ✨ Features
+- **Blazingly fast** rendering performance
+- **Lightweight** and dependency-free
+- **Thread-safe** architecture
+- **Simple, intuitive** API
 
-<div style="max-width: 800px; margin: 0 auto; text-align: left;">
+## Getting started
 
-- **Beginner Friendly**
-  We've kept things super easy for you - an API that was designed with simplicity in mind - even if you're just starting out.
+Check out the [documentation](https://osgl-rbx.github.io/osgl/) for installation guides and tutorials.
 
-- **Drawing go brrrrrrrr**
-  Built from the ground to handle whatever you throw at it with no problems.
+## Code sample
 
-- **Thread-safe**
-  Plays *so* nice with threads you'd think they were childhood friends. Trust me.
+```lua
+local OSGL = require(path.to.osgl)
+local Window = OSGL.Window
+local color = OSGL.color
 
-- **It... just works!?**
-  Drop it into any Roblox project and it just works. No weird dependencies or special setup needed.
+local Image = path.to.imageLabel
 
-</div>
+-- Create a new drawing context (500px by 500px)
+local canvas = Window.from(Image, 500, 500):Unwrap()
+
+-- Clear the entire screen red
+canvas:Clear(color.RED)
+
+-- Render the frame
+canvas:Render()
+```
