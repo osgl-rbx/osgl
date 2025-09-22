@@ -1,0 +1,23 @@
+{
+    "name": "OSGL",
+    "tree": {
+        "$className": "DataModel",
+        "ReplicatedStorage": {
+            "OSGL": {
+                "$path": "src"
+            }
+        },
+        "ServerScriptService": {
+            "tests": {
+                "$path": "tests/server"
+            }
+        },
+        "StarterPlayer": {
+            "StarterPlayerScripts": {
+                "tests": {
+                    "$path": "tests/client"
+                }
+            }
+        }
+    }
+}
