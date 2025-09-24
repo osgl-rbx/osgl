@@ -12,7 +12,7 @@ local blendModes = draw.blendModes
 local blendingModes = enums.BlendingMode
 
 local util = {
-    VALID_TEXTURE_VERSIONS = { "1.5b", "1.6b", "1.6.1", "1.6.2", "1.6.3", 1.7 },
+    VALID_TEXTURE_VERSIONS = { "1.5b", "1.6b", "1.6.1", "1.6.2", "1.6.3", 1 },
     VALID_FONT_VERSIONS = { "1.5b", "1.6b", "1.6.1", "1.6.2", "1.6.3" },
 
     BLEND_MODULES = {

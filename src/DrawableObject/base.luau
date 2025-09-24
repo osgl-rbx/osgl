@@ -273,6 +273,7 @@ function DrawBaseImpl.Resample<T>(self: types.DrawableObject<T>, scale: number?)
 end
 
 function DrawBaseImpl.SetBlendingMode<T>(self: types.DrawableObject<T>, blending: oEnum.BlendingMode)
+    print("setting blending mode", blending);
     (self :: any)._blendMode = blending;
     (self :: any).Pixel = blendCache[blending]
 end

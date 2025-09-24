@@ -18,6 +18,10 @@ local types = require(OSGL.types)
 local result = require(OSGL.result)
 local oEnum = require(OSGL.enums)
 local util = require(OSGL.util)
+local color = require(OSGL.color)
+
+local readAlpha = color.a
+local blendFunctions = util.BLEND_FUNCTIONS
 
 type Result<T, E> = result.Result<T, E>
 
@@ -50,17 +54,25 @@ local function drawRotated<T>(
     local destX1 = textureX + texW - 1
     local destY1 = textureY + texH - 1
 
-    if destX0 < 0 then destX0 = 0 end
-    if destY0 < 0 then destY0 = 0 end
-    if destX1 >= objW then destX1 = objW - 1 end
-    if destY1 >= objH then destY1 = objH - 1 end
+    if destX0 < 0 then
+        destX0 = 0
+    end
+    if destY0 < 0 then
+        destY0 = 0
+    end
+    if destX1 >= objW then
+        destX1 = objW - 1
+    end
+    if destY1 >= objH then
+        destY1 = objH - 1
+    end
 
     for dy = destY0, destY1 do
         for dx = destX0, destX1 do
             local relX = dx - centerX
             local relY = dy - centerY
 
-            local sxWorld =  cosR * relX + sinR * relY + centerX
+            local sxWorld = cosR * relX + sinR * relY + centerX
             local syWorld = -sinR * relX + cosR * relY + centerY
 
             local sx = sxWorld - textureX
@@ -103,7 +115,7 @@ local function drawRotatedUnchecked<T>(
             local relX = dx - centerX
             local relY = dy - centerY
 
-            local sx =  cosR * relX + sinR * relY + texW / 2
+            local sx = cosR * relX + sinR * relY + texW / 2
             local sy = -sinR * relX + cosR * relY + texH / 2
 
             local isx = math.floor(sx + 0.5)
@@ -116,9 +128,7 @@ local function drawRotatedUnchecked<T>(
     end
 end
 
-local function checkUnloadedTexture(
-    unloadedTexture: types.RawTexture
-): Result<types.BaseRawTexture, oEnum.TextureError>
+local function checkUnloadedTexture(unloadedTexture: types.RawTexture): Result<types.BaseRawTexture, oEnum.TextureError>
     if typeof(unloadedTexture) == "Instance" and unloadedTexture:IsA("ModuleScript") then
         unloadedTexture = require(unloadedTexture)
     end
@@ -213,38 +223,68 @@ function Texture.drawChecked<T>(
     rotation = rotation or 0
 
     if rotation == 0 then
-        local xOffset = if textureX < 0 then math.abs(textureX) else 0
-        local yOffset = if textureY < 0 then math.abs(textureY) else 0
+        local blending = object:GetBlendingMode()
 
-        texture.width -= xOffset
-        texture.height -= yOffset
+        if blending == oEnum.BlendingMode.Overwrite then
+            local xOffset = if textureX < 0 then math.abs(textureX) else 0
+            local yOffset = if textureY < 0 then math.abs(textureY) else 0
 
-        local drawWidth = math.min(texture.width, object.width - textureX - xOffset)
-        local drawHeight = math.min(texture.height, object.height - textureY - yOffset)
-        
-        if drawWidth <= 0 or drawHeight <= 0 then
-            return
+            texture.width -= xOffset
+            texture.height -= yOffset
+
+            local drawWidth = math.min(texture.width, object.width - textureX - xOffset)
+            local drawHeight = math.min(texture.height, object.height - textureY - yOffset)
+
+            if drawWidth <= 0 or drawHeight <= 0 then
+                return
+            end
+
+            local targetBuffer = object.buffer
+            local sourceBuffer = texture.buffer
+
+            local maxY = if textureY + drawHeight - 1 > object.height
+                then object.height - textureY - 1
+                else drawHeight - 1
+
+            for y = yOffset, maxY do
+                buffer.copy(
+                    targetBuffer,
+                    ((textureY + y) * object.width + textureX + xOffset) * 4,
+                    sourceBuffer,
+                    (y * (texture.width + xOffset)) * 4,
+                    drawWidth * 4
+                )
+            end
+
+            texture.width += xOffset
+            texture.height += yOffset
+        else
+            local mode = blendFunctions[blending]
+            local objectBuffer = object.buffer
+            local textureBuffer = texture.buffer
+
+            for x = 0, texture.width - 1 do
+                local drawX = x + textureX
+
+                for y = 0, texture.height - 1 do
+                    local drawY = y + textureY
+
+                    local indexObject = (drawY * object.width + drawX) * 4
+                    local indexTexture = (y * texture.width + x) * 4
+
+                    local col = buffer.readu32(textureBuffer, indexTexture)
+                    if readAlpha(col) == 0 then
+                        continue
+                    end
+
+                    buffer.writeu32(
+                        objectBuffer,
+                        indexObject,
+                        mode(buffer.readu32(objectBuffer, indexObject), buffer.readu32(textureBuffer, indexTexture))
+                    )
+                end
+            end
         end
-
-        local targetBuffer = object.buffer
-        local sourceBuffer = texture.buffer
-
-        local maxY = if textureY + drawHeight - 1 > object.height
-            then object.height - textureY - 1 
-            else drawHeight - 1
-
-        for y = yOffset, maxY do
-            buffer.copy(
-                targetBuffer,
-                ((textureY + y) * object.width + textureX + xOffset) * 4,
-                sourceBuffer,
-                (y * (texture.width + xOffset)) * 4,
-                drawWidth * 4
-            )
-        end
-        
-        texture.width += xOffset
-        texture.height += yOffset
     else
         drawRotated(object, texture, textureX, textureY, rotation)
     end
