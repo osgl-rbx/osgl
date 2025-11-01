@@ -32,8 +32,8 @@ function splitStringWithEscapeSequences(input: string)
     local length = #input
 
     while i <= length do
-        local char = input:sub(i, i)
-        local nextChar = input:sub(i + 1, i + 1)
+        local char = string.sub(input, i, i)
+        local nextChar = string.sub(input, i + 1, i + 1)
 
         if char == "\\" and (nextChar == "t" or nextChar == "n") then
             table.insert(result, "\\" .. nextChar)
