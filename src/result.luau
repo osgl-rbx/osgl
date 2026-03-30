@@ -6,6 +6,25 @@
 -- Created/maintained by @saaawdust and contributors
 ------------------------------------------------------------
 
+--[=[
+<strong>@OSGL/Result</strong>
+<strong>@ThreadSafe</strong>
+<em>The result of an operation where `T` is a type-packed element. This exists because Roblox does not have a `tuple` type.</em>
+  ]=]
+export type TypePackedResult<E, T...> = {
+    isOk: boolean,
+    value: { any | E },
+
+    Unwrap: (self: TypePackedResult<E, T...>) -> T...,
+    Expect: (self: TypePackedResult<E, T...>, message: string) -> T...,
+
+    UnwrapErr: (self: TypePackedResult<E, T...>) -> E,
+    ExpectErr: (self: TypePackedResult<E, T...>, message: string) -> E,
+
+    UnwrapOr: (self: TypePackedResult<E, T...>, value: any) -> T...,
+    Or: (self: TypePackedResult<E, T...>, value: TypePackedResult<E, T...>) -> TypePackedResult<E, T...>
+}
+
 export type Result<T, E> = {
     isOk: boolean,
     value: { T | E },
@@ -20,6 +39,12 @@ export type Result<T, E> = {
     Or: (self: Result<T, E>, value: Result<T, E>) -> Result<T, E>,
 }
 
+--[=[
+    @class Result
+    A `Result` represents the outcome of an operation that can either succeed (`Ok`) or fail (`Err`).
+
+    @Core
+]=]
 local Result = {}
 
 --- A `Result` represents the outcome of an operation that can either succeed (`Ok`) or fail (`Err`).

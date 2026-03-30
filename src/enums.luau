@@ -18,10 +18,16 @@ local DrawableObjectError = {
 
 local TextureError = {
     BadInput = 6 :: TextureError,
+    ImmutableCreationError = 9 :: TextureError
 }
 
+--[=[
+<strong>@OSGL/Font</strong>
+<strong>@ThreadSafe</strong>
+<em>An error relating to the `Font` class.</em>
+  ]=]
 local FontError = {
-    BadInput = 7 :: TextureError,
+    BadInput = 7 :: FontError,
 }
 
 local BlendingMode = {
@@ -42,10 +48,39 @@ local enums = {
     BlendingMode = BlendingMode :: typeof(BlendingMode)
 }
 
+--[=[
+<strong>@OSGL/Window</strong>
+<strong>@ThreadSafe</strong>
+<em>An error relating to the `Window` class.</em>
+  ]=]
 export type WindowError = number
+
+--[=[
+<strong>@OSGL/Drawable</strong>
+<strong>@ThreadSafe</strong>
+<em>An error relating to the `DrawableObject` class.</em>
+  ]=]
 export type DrawableObjectError = number
+
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@ThreadSafe</strong>
+<em>An error relating to the `Texture` superclass.</em>
+  ]=]
 export type TextureError = number
+
+--[=[
+<strong>@OSGL/Font</strong>
+<strong>@ThreadSafe</strong>
+<em>An error relating to the `Font` class.</em>
+  ]=]
 export type FontError = number
+
+--[=[
+<strong>@OSGL/Drawable</strong>
+<strong>@ThreadSafe</strong>
+<em>A blending mode defines how an object's colors interact with the colors of the background behind it.</em>
+  ]=]
 export type BlendingMode = number
 export type OEnum = typeof(enums)
 

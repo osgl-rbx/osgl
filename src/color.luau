@@ -17,8 +17,9 @@ local lerp = math.lerp
 
 --[=[
     @class Color
-
     The color class. Handles manipulations of color values.
+
+    @Core
 ]=]
 local color = {}
 

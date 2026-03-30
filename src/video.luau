@@ -6,6 +6,11 @@
 local OSGL = script.Parent
 local types = require(OSGL.types)
 
+--[=[
+@class Video
+A `Video` allows for a sequence of frames to be displayed.
+
+]=]
 local Video = {}
 
 --[=[
@@ -85,7 +90,7 @@ end
 
 --[=[
 <strong>@OSGL/Video</strong>
-<em>Returns a frame of the</em><code>Video</code><em>.</em>
+<em>Returns a frame of the </em><code>Video</code><em>.</em>
   ]=]
 function GetFrame(self: types.Video, frame: number): (buffer, number, number)
     return self.frames[frame], self.width, self.height
@@ -113,7 +118,7 @@ function Video.new(width: number, height: number, frames: { buffer }?): types.Vi
         if not size then
             size = len
         elseif len ~= size then
-            warn("Failed to load video frame ".. i.. ". The frame has been discarded, all frames but be the same size!")
+            warn("Failed to load video frame ".. i.. ". The frame has been discarded, all frames must be the same size!")
             table.remove(frames, i)
         end
     end
@@ -160,7 +165,7 @@ function Video.from(collection: { types.RawTexture }): types.Video
         if not width or not height then
             width, height = v.width, v.height
         elseif width ~= v.width or height ~= v.height then
-            warn("Failed to load video frame ".. i.. ". The frame has been discarded, all frames but be the same size!")
+            warn("Failed to load video frame ".. i.. ". The frame has been discarded, all frames must be the same size!")
             continue
         end
 

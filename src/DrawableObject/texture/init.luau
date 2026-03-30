@@ -10,7 +10,7 @@ local AssetService = game:GetService("AssetService")
 local HttpService = game:GetService("HttpService")
 
 local DrawableObject = script.Parent
-local base = require(DrawableObject.base)
+local base = require(script.base)
 local stringCompressor = require(script.canvasDrawStringCompressor)
 
 local OSGL = DrawableObject.Parent
@@ -27,11 +27,18 @@ type Result<T, E> = result.Result<T, E>
 
 local round = math.round
 
+--[=[
+    @class Texture
+    A `Texture` is a `buffer` that can be drawn to.
+
+    @Core
+    @Inherits(Drawable)
+]=]
 local Texture = {}
 
 local function drawRotated<T>(
     object: types.DrawableObject<T>,
-    texture: types.OSGLTexture,
+    texture: types.MutableTexture,
     textureX: number, -- top-left dest position where the texture would normally draw
     textureY: number,
     rotation: number
@@ -93,7 +100,7 @@ end
 
 local function drawRotatedUnchecked<T>(
     object: types.DrawableObject<T>,
-    texture: types.OSGLTexture,
+    texture: types.MutableTexture,
     textureX: number,
     textureY: number,
     rotation: number
@@ -145,7 +152,7 @@ end
 <strong>@Checked</strong>
 <em>Creates a </em><code>Texture</code><em> from raw data.</em>
   ]=]
-function Texture.fromChecked(rawTexture: types.RawTexture): Result<types.OSGLTexture, oEnum.TextureError>
+function Texture.fromChecked(rawTexture: types.RawTexture): Result<types.MutableTexture, oEnum.TextureError>
     local raw = checkUnloadedTexture(rawTexture)
 
     if not raw.isOk then
@@ -160,7 +167,7 @@ end
 <strong>@Unchecked!</strong>
 <em>Creates a </em><code>Texture</code><em> from an unloaded one.</em>
   ]=]
-function Texture.fromUnchecked(rawTexture: types.BaseRawTexture): types.OSGLTexture
+function Texture.fromUnchecked(rawTexture: types.BaseRawTexture): types.MutableTexture
     local width, height, pixels = rawTexture.get()
     local t = base.new()
 
@@ -188,7 +195,7 @@ end
 <strong>@Checked</strong>
 <em>Serializes the </em><code>Texture</code><em>.</em>
   ]=]
-function Texture.serializeChecked(rawTexture: types.RawTexture): Result<(buffer, number, number), oEnum.TextureError>
+function Texture.serializeChecked(rawTexture: types.RawTexture): result.TypePackedResult<oEnum.TextureError, buffer, number, number>
     local texture = checkUnloadedTexture(rawTexture)
 
     if not texture.isOk then
@@ -215,7 +222,7 @@ end
   ]=]
 function Texture.drawChecked<T>(
     object: types.DrawableObject<T>,
-    texture: types.OSGLTexture,
+    texture: types.MutableTexture,
     textureX: number,
     textureY: number,
     rotation: number?
@@ -297,7 +304,7 @@ end
   ]=]
 function Texture.drawUnchecked<T>(
     object: types.DrawableObject<T>,
-    texture: types.OSGLTexture,
+    texture: types.MutableTexture,
     textureX: number,
     textureY: number,
     rotation: number?
@@ -311,14 +318,8 @@ function Texture.drawUnchecked<T>(
     end
 end
 
---[=[
-<strong>@OSGL/Texture</strong>
-<em>Creates a </em><code>Texture</code><em> from an asset id.</em>
-  ]=]
-function Texture.fromAssetId(assetId: number): Result<types.OSGLTexture, oEnum.DrawableObjectError>
-    local newContent = Content.fromAssetId(assetId)
-
-    local temporaryEditableImage = AssetService:CreateEditableImageAsync(newContent)
+local function fromContent(content: Content): Result<types.MutableTexture, oEnum.DrawableObjectError>
+    local temporaryEditableImage = AssetService:CreateEditableImageAsync(content)
     if not temporaryEditableImage then
         return result.new(false, oEnum.DrawableObjectError.NotEnoughMemory)
     end
@@ -342,12 +343,30 @@ end
 --[=[
 <strong>@OSGL/Texture</strong>
 <strong>@Checked</strong>
+<em>Creates a </em><code>Texture</code><em> from an </em><code>ImmutableTexture</code><em>.</em>
+  ]=]
+function Texture.fromImmutable(immutable: types.ImmutableTexture)
+    return fromContent(immutable)
+end
+
+--[=[
+<strong>@OSGL/Texture</strong>
+<em>Creates a </em><code>Texture</code><em> from an asset id.</em>
+  ]=]
+function Texture.fromAssetId(assetId: number): Result<types.MutableTexture, oEnum.DrawableObjectError>
+    local newContent = Content.fromAssetId(assetId)
+    return fromContent(newContent)
+end
+
+--[=[
+<strong>@OSGL/Texture</strong>
+<strong>@Checked</strong>
 <em>Loads a CanvasDraw </em><code>SaveObject</code><em> as an OSGL </em><code>Texture</code><em>.</em>
   ]=]
 function Texture.fromCanvasDrawSaveObject(
     saveObject: Instance,
     slowLoad: boolean?
-): Result<types.OSGLTexture, oEnum.TextureError>
+): Result<types.MutableTexture, oEnum.TextureError>
     local isV4Point9AndAbove = saveObject:GetAttribute("Resolution")
         and not saveObject:GetAttribute("Colour")
         and not saveObject:GetAttribute("Alpha")
@@ -436,9 +455,9 @@ function Texture.fromCanvasDrawSaveObject(
 
             local index = i * 4 - 4
 
-            buffer.writeu8(bfr, index, R)
-            buffer.writeu8(bfr, index + 1, G)
-            buffer.writeu8(bfr, index + 2, B)
+            buffer.writeu8(bfr, index, tonumber(R))
+            buffer.writeu8(bfr, index + 1, tonumber(G))
+            buffer.writeu8(bfr, index + 2, tonumber(B))
             buffer.writeu8(bfr, index + 3, A)
         end
     end
@@ -450,7 +469,7 @@ end
 <strong>@OSGL/Texture</strong>
 <em>Creates a new </em><code>Texture</code><em> from the data provided.</em>
   ]=]
-function Texture.new(width: number, height: number, bfr: buffer?): Result<types.OSGLTexture, oEnum.DrawableObjectError>
+function Texture.new(width: number, height: number, bfr: buffer?): Result<types.MutableTexture, oEnum.DrawableObjectError>
     local len = width * height * 4
     local buff = bfr or buffer.create(len)
 

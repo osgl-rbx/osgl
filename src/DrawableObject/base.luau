@@ -21,6 +21,12 @@ local blendCache = util.BLEND_MODULES
 
 type Result<T, E> = result.Result<T, E>
 
+--[=[
+    @class Drawable
+    The `Drawable` class implements drawing methods.
+
+    @Core
+]=]
 local DrawBaseImpl = {}
 
 --[=[
@@ -137,7 +143,7 @@ end
 
 --[=[
 <strong>@OSGL/Drawable</strong>
-<strong>@Unhecked!</strong>
+<strong>@Unchecked!</strong>
 <em>Returns the color of the given pixel</em>
   ]=]
 function DrawBaseImpl.ReadPixelUnchecked<T>(self: types.DrawableObject<T>, x: number, y: number): types.Color
@@ -270,6 +276,8 @@ function DrawBaseImpl.Resample<T>(self: types.DrawableObject<T>, scale: number?)
     self.width = newWidth
     self.height = newHeight
     self.buffer = newBuffer
+
+    return result.new(true)
 end
 
 function DrawBaseImpl.SetBlendingMode<T>(self: types.DrawableObject<T>, blending: oEnum.BlendingMode)

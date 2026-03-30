@@ -17,8 +17,8 @@ type Result<T, E> = result.Result<T, E>
 
 --[=[
     @class Font
-
     The Font class handles loading and rendering of fonts.
+    
 ]=]
 local Font = {}
 

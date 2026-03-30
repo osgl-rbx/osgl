@@ -23,6 +23,11 @@ local function checkUnloadedBitmap(unloadedBitmap: types.RawTexture): Result<typ
     return result.new(true, unloadedBitmap)
 end
 
+--[=[
+@class Bitmap
+A `Bitmap` is a `Texture` with a varying amount of color channels.
+
+]=]
 local Bitmap = {}
 
 --[=[
